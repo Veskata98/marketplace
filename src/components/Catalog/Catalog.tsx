@@ -25,57 +25,74 @@ export const Catalog = () => {
 	};
 
 	return (
-		<div className="flex">
-			<div>
-				<h2>Category:</h2>
-				<ul className="gap-3 p-10 flex-col inline-flex">
+		<div className="flex gap-4 justify-between w-10/12">
+			<div className="w-1/5 bg-slate-200 pt-2">
+				<h2 className="text-xl font-bold mb-4 text-center">Categories</h2>
+				<ul className="flex flex-col gap-1 align-middle">
 					<li
-						className="flex cursor-pointer ${}"
+						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('electronics')}
 						onMouseLeave={() => hideCategory('electronics')}>
 						<Link to="/electronics" className={`${isVisible.electronics && 'text-orange-600'}`}>
 							Electronics
 						</Link>
 						{isVisible.electronics && (
-							<div className="flex gap-2 ml-4">
-								<Link to="/computers" className="hover:text-orange-600 p-2 pt-0">
+							<div className="flex gap-2 bg-slate-300 shadow-lg absolute left-full">
+								<Link to="/computers" className="hover:text-orange-600 p-4 border-r border-slate-400">
 									Computers
 								</Link>
-								<Link to="/laptops">Laptops</Link>
-								<Link to="/tvs">TVs</Link>
-								<Link to="/consoles">Consoles</Link>
-								<Link to="/peripherals">Peripherals</Link>
+								<Link className="hover:text-orange-600 border-r border-slate-400 p-4" to="/laptops">
+									Laptops
+								</Link>
+								<Link className="hover:text-orange-600 border-r border-slate-400 p-4" to="/tvs">
+									TVs
+								</Link>
+								<Link className="hover:text-orange-600 border-r border-slate-400 p-4" to="/consoles">
+									Consoles
+								</Link>
+								<Link className="hover:text-orange-600 p-4" to="/peripherals">
+									Peripherals
+								</Link>
 							</div>
 						)}
 					</li>
-
 					<li
-						className="category-title"
-						onMouseEnter={() => showCategory('vehicles')}
-						onMouseLeave={() => hideCategory('vehicles')}>
-						Vehicles
-						<div className="catalog-subcategories">{isVisible.vehicles && <h2>Vehicles</h2>}</div>
-					</li>
-
-					<li
-						className="category-title"
+						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('clothes')}
 						onMouseLeave={() => hideCategory('clothes')}>
-						Clothes
-						<div className="catalog-subcategories">{isVisible.clothes && <h2>Clothes</h2>}</div>
-					</li>
-
-					<li
-						className="category-title"
-						onMouseEnter={() => showCategory('food')}
-						onMouseLeave={() => hideCategory('food')}>
-						Food
-						<div className="catalog-subcategories">{isVisible.food && <h2>Food</h2>}</div>
+						<Link to="/electronics" className={`${isVisible.clothes && 'text-orange-600'}`}>
+							Clothing and Accessories
+						</Link>
+						{isVisible.clothes && (
+							<div className="flex text-center items-stretch align-items-center bg-slate-300 shadow-lg absolute left-full">
+								<Link
+									to="/computers"
+									className="hover:text-orange-600 p-4 px-6 border-r border-slate-400">
+									Men's clothing
+								</Link>
+								<Link
+									className="hover:text-orange-600 border-r border-slate-400 p-4 px-6"
+									to="/laptops">
+									Women's clothing
+								</Link>
+								<Link className="hover:text-orange-600 border-r border-slate-400 p-4 px-6" to="/tvs">
+									Kid's clothing
+								</Link>
+								<Link
+									className="flex items-center hover:text-orange-600 border-r border-slate-400 p-4 px-6"
+									to="/consoles">
+									Shoes
+								</Link>
+								<Link className="flex items-center hover:text-orange-600 p-4 px-6" to="/peripherals">
+									Accessories
+								</Link>
+							</div>
+						)}
 					</li>
 				</ul>
 			</div>
 
-			<div>
+			<div className="w-4/5">
 				<h2>Latest listed</h2>
 				<div></div>
 			</div>

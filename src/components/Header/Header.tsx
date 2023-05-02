@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useAuth } from '../../hooks/useAuth';
 
-import defaulAvatar from '../../assets/images/defaultAvatar.png';
+import defaultAvatar from '../../assets/images/defaultAvatar.png';
 
 export const Header = () => {
 	const { user } = useContext(AuthContext);
@@ -47,8 +47,12 @@ export const Header = () => {
 							<Link to={`/profile/${user.uid}`} className="flex gap-1 items-center justify-center ">
 								<img
 									className="w-10 h-10 rounded-full object-contain"
-									src={user.photoURL || defaulAvatar}
+									src={user.photoURL || defaultAvatar}
 									alt="profile_img"
+									referrerPolicy="no-referrer"
+									onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+										e.currentTarget.src = defaultAvatar;
+									}}
 								/>
 								<span className="font-semibold">{user.displayName}</span>
 							</Link>
