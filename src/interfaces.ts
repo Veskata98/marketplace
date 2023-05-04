@@ -4,7 +4,11 @@ export interface CatalogCategories {
 	electronics: boolean;
 	vehicles: boolean;
 	clothes: boolean;
-	food: boolean;
+	home: boolean;
+	beauty: boolean;
+	sports: boolean;
+	toys: boolean;
+	entertainment: boolean;
 }
 
 export interface Character {

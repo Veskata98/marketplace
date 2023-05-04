@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 
 import { FcGoogle } from 'react-icons/fc';
-import { useAuth } from '../../../hooks/useAuth';
+import useAuth from '../../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 
 const SignIn = () => {
@@ -25,7 +25,7 @@ const SignIn = () => {
 		}
 	};
 
-	const signInHandler = async (e: FormEvent) => {
+	const signInHandler = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		try {

@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
-import { useAuth } from '../../../hooks/useAuth';
+import useAuth from '../../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 import { AuthErrorCodes } from 'firebase/auth';
 

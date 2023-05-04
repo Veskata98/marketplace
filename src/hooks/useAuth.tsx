@@ -15,27 +15,25 @@ import { setDoc, doc } from 'firebase/firestore';
 
 const googleProvider = new GoogleAuthProvider();
 
-export const useAuth = () => {
+const useAuth = () => {
 	const { saveUserToLocalStorage, removeUserFromLocalStorage } = useContext(AuthContext);
 
 	const navigate = useNavigate();
 
 	const basicSignIn = async (email: string, password: string) => {
 		try {
-			const result = await signInWithEmailAndPassword(auth, email, password);
+			const { user } = await signInWithEmailAndPassword(auth, email, password);
 
-			await setDoc(doc(db, 'users', result.user.uid), {
+			await setDoc(doc(db, 'users', user.uid), {
 				email,
-				photoURL: result.user.photoURL,
-				displayName: result.user.displayName,
+				photoURL: user.photoURL,
+				displayName: user.displayName,
 			});
 
-			saveUserToLocalStorage(result.user);
+			saveUserToLocalStorage(user);
 
 			navigate('/', { replace: true });
 		} catch (error: unknown | FirebaseError) {
-			console.log(error);
-
 			if (error instanceof FirebaseError) {
 				throw new Error(error.code);
 			} else {
@@ -46,15 +44,15 @@ export const useAuth = () => {
 
 	const googleSignIn = async () => {
 		try {
-			const result = await signInWithPopup(auth, googleProvider);
+			const { user } = await signInWithPopup(auth, googleProvider);
 
-			await setDoc(doc(db, 'users', result.user.uid), {
-				email: result.user.email,
-				photoURL: result.user.photoURL,
-				displayName: result.user.displayName,
+			await setDoc(doc(db, 'users', user.uid), {
+				email: user.email,
+				photoURL: user.photoURL,
+				displayName: user.displayName,
 			});
 
-			saveUserToLocalStorage(result.user);
+			saveUserToLocalStorage(user);
 
 			navigate('/', { replace: true });
 		} catch (error) {
@@ -64,16 +62,16 @@ export const useAuth = () => {
 
 	const basicSignUp = async (email: string, username: string, password: string) => {
 		try {
-			const result = await createUserWithEmailAndPassword(auth, email, password);
-			await updateProfile(result.user, { displayName: username });
+			const { user } = await createUserWithEmailAndPassword(auth, email, password);
+			await updateProfile(user, { displayName: username });
 
-			await setDoc(doc(db, 'users', result.user.uid), {
+			await setDoc(doc(db, 'users', user.uid), {
 				email,
-				photoURL: result.user.photoURL,
-				displayName: result.user.displayName,
+				photoURL: user.photoURL,
+				displayName: user.displayName,
 			});
 
-			saveUserToLocalStorage(result.user);
+			saveUserToLocalStorage(user);
 
 			navigate('/', { replace: true });
 		} catch (error: unknown | FirebaseError) {
@@ -102,3 +100,5 @@ export const useAuth = () => {
 		basicSignOut,
 	};
 };
+
+export default useAuth;

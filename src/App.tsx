@@ -11,6 +11,7 @@ import SignIn from './components/Auth/SignIn/SignIn';
 
 import Main from './components/Main/Main';
 import Profile from './components/Profile/Profile';
+import CreateListing from './components/Listings/CreateListing/CreateListing';
 
 const App = () => {
 	return (
@@ -24,6 +25,7 @@ const App = () => {
 
 						<Route path="/" element={<Home />} />
 						<Route path="/catalog" element={<Catalog />} />
+						<Route path="/create/listing" element={<CreateListing />} />
 
 						<Route path="/profile/:uid" element={<Profile />} />
 					</Routes>

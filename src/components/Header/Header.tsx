@@ -1,19 +1,23 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { useAuth } from '../../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 
 import defaultAvatar from '../../assets/images/defaultAvatar.png';
+import useListing from '../../hooks/useListing';
 
 export const Header = () => {
 	const { user } = useContext(AuthContext);
+
+	const { getLatest } = useListing();
+	getLatest();
 
 	const { basicSignOut } = useAuth();
 
 	return (
 		<div className="bg-orange-300 w-full h-16 flex items-center justify-between px-4">
 			<Link to="/" className="text-2xl font-semibold text-gray-800">
-				My Store
+				Let'Sell
 			</Link>
 			<ul className="flex items-center justify-end space-x-4">
 				<li>
