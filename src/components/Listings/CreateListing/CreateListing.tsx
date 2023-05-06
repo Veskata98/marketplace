@@ -10,8 +10,9 @@ const CreateListing = () => {
 		addListing({
 			title: 'Yeah',
 			price: 15,
+			category: 'electronics',
 			description: 'Very nice',
-			imageUrl: 'http...',
+			imageUrl: 'https://m.media-amazon.com/images/I/51IpFZCaVsL._SX450_.jpg',
 		});
 	}
 

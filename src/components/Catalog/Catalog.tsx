@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CatalogCategories } from '../../interfaces';
 import { Link } from 'react-router-dom';
+import { getDocs, limit, orderBy, query } from 'firebase/firestore';
+import { Listing } from '../../types';
+import { listingsRef } from '../../utils/firebaseRefs';
+import Spinner from '../Spinner/Spinner';
+import LatestListing from './LatestListing/LatestListing';
 
 export const Catalog = () => {
+	const [latestListings, setLatestListings] = useState<Listing[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+
 	const [isVisible, setIsVisible] = useState<CatalogCategories>({
 		electronics: false,
 		vehicles: false,
@@ -13,6 +21,24 @@ export const Catalog = () => {
 		toys: false,
 		entertainment: false,
 	});
+
+	useEffect(() => {
+		(async () => {
+			const result: Listing[] = [];
+			const queryFromDB = query(listingsRef, orderBy('createdAt', 'desc'), limit(20));
+
+			const querySnapshot = await getDocs(queryFromDB);
+
+			querySnapshot.forEach(async (doc) => {
+				const data = doc.data();
+				data.id = doc.id;
+
+				result.push(data as Listing);
+			});
+			setLatestListings(result);
+			setIsLoading(false);
+		})();
+	}, []);
 
 	const showCategory = (category: keyof CatalogCategories) => {
 		setIsVisible((state) => ({
@@ -34,7 +60,7 @@ export const Catalog = () => {
 				<h2 className="text-xl font-bold mb-4 text-center">Categories</h2>
 				<ul className="flex flex-col gap-1 align-middle">
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('electronics')}
 						onMouseLeave={() => hideCategory('electronics')}>
 						<Link to="/electronics" className={`${isVisible.electronics && 'text-orange-600'}`}>
@@ -66,7 +92,7 @@ export const Catalog = () => {
 						)}
 					</li>
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('clothes')}
 						onMouseLeave={() => hideCategory('clothes')}>
 						<Link to="/electronics" className={`${isVisible.clothes && 'text-orange-600'}`}>
@@ -103,7 +129,7 @@ export const Catalog = () => {
 						)}
 					</li>
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('vehicles')}
 						onMouseLeave={() => hideCategory('vehicles')}>
 						<Link to="/electronics" className={`${isVisible.vehicles && 'text-orange-600'}`}>
@@ -140,7 +166,7 @@ export const Catalog = () => {
 						)}
 					</li>
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('home')}
 						onMouseLeave={() => hideCategory('home')}>
 						<Link to="/electronics" className={`${isVisible.home && 'text-orange-600'}`}>
@@ -170,7 +196,7 @@ export const Catalog = () => {
 						)}
 					</li>
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('beauty')}
 						onMouseLeave={() => hideCategory('beauty')}>
 						<Link to="/electronics" className={`${isVisible.beauty && 'text-orange-600'}`}>
@@ -202,7 +228,7 @@ export const Catalog = () => {
 						)}
 					</li>
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('sports')}
 						onMouseLeave={() => hideCategory('sports')}>
 						<Link to="/electronics" className={`${isVisible.sports && 'text-orange-600'}`}>
@@ -234,7 +260,7 @@ export const Catalog = () => {
 						)}
 					</li>
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('toys')}
 						onMouseLeave={() => hideCategory('toys')}>
 						<Link to="/electronics" className={`${isVisible.toys && 'text-orange-600'}`}>
@@ -261,7 +287,7 @@ export const Catalog = () => {
 						)}
 					</li>
 					<li
-						className="flex items-center justify-between p-2 cursor-pointer relative border-b border-slate-300"
+						className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
 						onMouseEnter={() => showCategory('entertainment')}
 						onMouseLeave={() => hideCategory('entertainment')}>
 						<Link to="/electronics" className={`${isVisible.entertainment && 'text-orange-600'}`}>
@@ -289,8 +315,18 @@ export const Catalog = () => {
 			</div>
 
 			<div className="w-4/5">
-				<h2>Latest listed</h2>
-				<div></div>
+				{isLoading ? (
+					<Spinner />
+				) : (
+					<>
+						<h2 className="font-semibold text-2xl p-4 text-center">Latest listed</h2>
+						<div className="flex gap-4 flex-wrap justify-center">
+							{latestListings.map((x: Listing) => (
+								<LatestListing key={x.id} listing={x} />
+							))}
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);
