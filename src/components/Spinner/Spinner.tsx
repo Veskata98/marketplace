@@ -3,7 +3,7 @@ const Spinner = () => {
 		<div role="status" className="w-full h-full flex items-center justify-center">
 			<svg
 				aria-hidden="true"
-				className="inline w-20 h-20 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+				className="inline w-20 h-20 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-orange-500"
 				viewBox="0 0 100 101"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg">

@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { CatalogCategories } from '../../interfaces';
 import { Link } from 'react-router-dom';
-import { getDocs, limit, orderBy, query } from 'firebase/firestore';
+import { getCountFromServer, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import { Listing } from '../../types';
 import { listingsRef } from '../../utils/firebaseRefs';
 import Spinner from '../Spinner/Spinner';
-import LatestListing from './LatestListing/LatestListing';
+import ListingCard from './ListingCard/ListingCard';
+import { scrollToBottom } from '../../utils/helpers';
 
 export const Catalog = () => {
 	const [latestListings, setLatestListings] = useState<Listing[]>([]);
+	const [maxLimit, setMaxLimit] = useState(20);
+	const [totalListingCount, setTotalListingCount] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [isVisible, setIsVisible] = useState<CatalogCategories>({
@@ -25,9 +28,12 @@ export const Catalog = () => {
 	useEffect(() => {
 		(async () => {
 			const result: Listing[] = [];
-			const queryFromDB = query(listingsRef, orderBy('createdAt', 'desc'), limit(20));
+			const queryFromDB = query(listingsRef, orderBy('createdAt', 'desc'), limit(maxLimit));
+			const queryCount = query(listingsRef);
 
 			const querySnapshot = await getDocs(queryFromDB);
+			const queryCountSnapshot = await getCountFromServer(queryCount);
+			setTotalListingCount(queryCountSnapshot.data().count);
 
 			querySnapshot.forEach(async (doc) => {
 				const data = doc.data();
@@ -38,7 +44,7 @@ export const Catalog = () => {
 			setLatestListings(result);
 			setIsLoading(false);
 		})();
-	}, []);
+	}, [maxLimit]);
 
 	const showCategory = (category: keyof CatalogCategories) => {
 		setIsVisible((state) => ({
@@ -52,6 +58,11 @@ export const Catalog = () => {
 			...state,
 			[category]: false,
 		}));
+	};
+
+	const updateMaxLimit = () => {
+		setMaxLimit((oldLimit) => oldLimit + 20);
+		scrollToBottom();
 	};
 
 	return (
@@ -85,7 +96,7 @@ export const Catalog = () => {
 								</Link>
 								<Link
 									className="flex items-center hover:text-orange-600 border-slate-400 p-4 px-8"
-									to="/catalog/games">
+									to="/catalog/gaming">
 									Gaming
 								</Link>
 							</div>
@@ -314,17 +325,30 @@ export const Catalog = () => {
 				</ul>
 			</div>
 
-			<div className="w-4/5">
+			<div className="w-4/5 pb-16">
 				{isLoading ? (
 					<Spinner />
 				) : (
 					<>
-						<h2 className="font-semibold text-2xl p-4 text-center">Latest listed</h2>
-						<div className="flex gap-4 flex-wrap justify-center">
-							{latestListings.map((x: Listing) => (
-								<LatestListing key={x.id} listing={x} />
-							))}
-						</div>
+						{latestListings.length ? (
+							<>
+								<h2 className="font-semibold text-2xl p-4 text-center">Latest listed</h2>
+								<div className="flex gap-4 flex-wrap justify-center">
+									{latestListings.map((x: Listing) => (
+										<ListingCard key={x.id} listing={x} />
+									))}
+								</div>
+								{totalListingCount > 20 && (
+									<button className="text-lg" onClick={updateMaxLimit}>
+										Show More
+									</button>
+								)}
+							</>
+						) : (
+							<h2 className="flex items-center justify-center text-2xl h-full">
+								There are no listings yet.
+							</h2>
+						)}
 					</>
 				)}
 			</div>

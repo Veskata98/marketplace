@@ -72,7 +72,6 @@ const useAuth = () => {
 			});
 
 			saveUserToLocalStorage(user);
-
 			navigate('/', { replace: true });
 		} catch (error: unknown | FirebaseError) {
 			if (error instanceof FirebaseError) {

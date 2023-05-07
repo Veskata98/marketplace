@@ -12,6 +12,8 @@ import SignIn from './components/Auth/SignIn/SignIn';
 import Main from './components/Main/Main';
 import Profile from './components/Profile/Profile';
 import CreateListing from './components/Listings/CreateListing/CreateListing';
+import CatalogCategory from './components/Catalog/CatalogCategory/CatalogCategory';
+import SingleListing from './components/Catalog/SingleListing/SingleListing';
 
 const App = () => {
 	return (
@@ -25,6 +27,8 @@ const App = () => {
 
 						<Route path="/" element={<Home />} />
 						<Route path="/catalog" element={<Catalog />} />
+						<Route path="/catalog/:category" element={<CatalogCategory />} />
+						<Route path="/catalog/listing/:listingId" element={<SingleListing />} />
 						<Route path="/create/listing" element={<CreateListing />} />
 
 						<Route path="/profile/:uid" element={<Profile />} />
