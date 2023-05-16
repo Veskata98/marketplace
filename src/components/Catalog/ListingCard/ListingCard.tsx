@@ -1,12 +1,8 @@
 import { useState } from 'react';
-import { categoriesWithSubcategories, Listing } from '../../../types';
+import { categoriesWithSubcategories, ListingCardProps } from '../../../types';
 
 import brokenImg from '../../../assets/images/broken-img.png';
 import { Link } from 'react-router-dom';
-
-type ListingCardProps = {
-	listing: Listing;
-};
 
 const ListingCard = ({ listing }: ListingCardProps) => {
 	const [imageError, setImageError] = useState(false);
@@ -20,12 +16,12 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 		<Link to={`/catalog/listing/${listing.id}`}>
 			<div className="bg-white rounded-md shadow-md overflow-hidden w-72">
 				{imageError ? (
-					<img src={brokenImg} alt={listing.title} className="w-full h-48 object-cover border-b" />
+					<img src={brokenImg} alt={listing.title} className="w-full h-48 object-cover border-b p-2" />
 				) : (
 					<img
 						src={listing.imageUrl}
 						alt={listing.title}
-						className="w-full h-48 object-contain border-b"
+						className="w-full h-48 object-contain border-b p-2"
 						onError={handleImageError}
 					/>
 				)}

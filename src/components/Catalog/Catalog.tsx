@@ -232,7 +232,7 @@ export const Catalog = () => {
 				</ul>
 			</div>
 
-			<div className="w-4/5 pb-16">
+			<div className="w-4/5 pb-8">
 				{isLoading ? (
 					<Spinner />
 				) : (
@@ -245,7 +245,7 @@ export const Catalog = () => {
 										<ListingCard key={x.id} listing={x} />
 									))}
 								</div>
-								{totalListingCount > 20 && (
+								{totalListingCount > 20 && maxLimit + 20 < totalListingCount && (
 									<div className="flex justify-center mt-4">
 										<button
 											className="text-lg text-orange-500 hover:text-orange-400"

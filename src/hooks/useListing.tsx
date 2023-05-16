@@ -11,9 +11,6 @@ const useListing = () => {
 		if (user) {
 			await addDoc(listingsRef, {
 				...listing,
-				creatorId: user.uid,
-				creator: user.displayName,
-				creatorAvatar: user.photoURL || null,
 				createdAt: Date.now(),
 				modifiedAt: null,
 			});

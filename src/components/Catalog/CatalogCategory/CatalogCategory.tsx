@@ -20,13 +20,27 @@ const CatalogCategory = () => {
 	useEffect(() => {
 		(async () => {
 			const result: Listing[] = [];
-			const queryFromDB = query(
-				listingsRef,
-				where('subcategory', '==', subcategory),
-				orderBy('createdAt', 'desc'),
-				limit(maxLimit)
-			);
-			const queryCount = query(listingsRef);
+			let queryFromDB;
+
+			if (subcategory) {
+				queryFromDB = query(
+					listingsRef,
+					where('subcategory', '==', subcategory),
+					orderBy('createdAt', 'desc'),
+					limit(maxLimit)
+				);
+			} else {
+				queryFromDB = query(
+					listingsRef,
+					where('category', '==', category),
+					orderBy('createdAt', 'desc'),
+					limit(maxLimit)
+				);
+			}
+
+			const queryCount = subcategory
+				? query(listingsRef, where('subcategory', '==', subcategory))
+				: query(listingsRef, where('category', '==', category));
 
 			const querySnapshot = await getDocs(queryFromDB);
 			const queryCountSnapshot = await getCountFromServer(queryCount);
@@ -41,7 +55,7 @@ const CatalogCategory = () => {
 			setListings(result);
 			setIsLoading(false);
 		})();
-	}, [maxLimit, category]);
+	}, [maxLimit, category, subcategory]);
 
 	const updateMaxLimit = () => {
 		setMaxLimit((oldLimit) => oldLimit + 20);
@@ -52,10 +66,13 @@ const CatalogCategory = () => {
 		<div className="flex gap-4 justify-between w-10/12">
 			<div className="w-1/5 bg-slate-200 pt-2">
 				<h2 className="text-xl font-bold mb-4 text-center">
-					{category && subcategory && categoriesWithSubcategories[category].subcategories[subcategory]}
+					{category &&
+						(subcategory
+							? categoriesWithSubcategories[category].subcategories[subcategory]
+							: categoriesWithSubcategories[category].label)}
 				</h2>
 			</div>
-			<div className="w-4/5 pb-16 relative">
+			<div className="w-4/5 pb-8 relative">
 				{isLoading ? (
 					<Spinner />
 				) : (
@@ -71,10 +88,14 @@ const CatalogCategory = () => {
 										<ListingCard key={x.id} listing={x} />
 									))}
 								</div>
-								{totalListingCount > 20 && (
-									<button className="text-lg" onClick={updateMaxLimit}>
-										Show More
-									</button>
+								{totalListingCount > 20 && maxLimit + 20 < totalListingCount && (
+									<div className="flex justify-center mt-4">
+										<button
+											className="text-lg text-orange-500 hover:text-orange-400"
+											onClick={updateMaxLimit}>
+											Show More
+										</button>
+									</div>
 								)}
 							</>
 						) : (

@@ -1,8 +1,11 @@
-import { DocumentReference } from 'firebase/firestore';
 import { ReactNode } from 'react';
 
 export type ChildrenProps = {
 	children: ReactNode;
+};
+
+export type ListingCardProps = {
+	listing: Listing;
 };
 
 export type CategoryWithSubcategories = {
@@ -92,10 +95,10 @@ export const categoriesWithSubcategories: {
 export type Listing = {
 	id?: string;
 	creator?: string;
-	creatorAvatar?: string;
+	creatorAvatar?: string | null;
 	category: keyof typeof categoriesWithSubcategories;
 	subcategory: keyof (typeof categoriesWithSubcategories)[keyof typeof categoriesWithSubcategories]['subcategories'];
-	creatorId?: DocumentReference;
+	creatorId?: string;
 	title: string;
 	price: number;
 	description: string;
