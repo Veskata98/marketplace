@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { CatalogCategories } from '../../interfaces';
 import { Link } from 'react-router-dom';
 import { getCountFromServer, getDocs, limit, orderBy, query } from 'firebase/firestore';
-import { Listing } from '../../types';
+import { Category, Listing } from '../../types';
 import { listingsRef } from '../../utils/firebaseRefs';
 import Spinner from '../Spinner/Spinner';
 import ListingCard from './ListingCard/ListingCard';
@@ -14,7 +13,7 @@ export const Catalog = () => {
 	const [totalListingCount, setTotalListingCount] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 
-	const [isVisible, setIsVisible] = useState<CatalogCategories>({
+	const [isVisible, setIsVisible] = useState({
 		electronics: false,
 		vehicles: false,
 		clothes: false,
@@ -46,14 +45,14 @@ export const Catalog = () => {
 		})();
 	}, [maxLimit]);
 
-	const showCategory = (category: keyof CatalogCategories) => {
+	const showCategory = (category: Category) => {
 		setIsVisible((state) => ({
 			...state,
 			[category]: true,
 		}));
 	};
 
-	const hideCategory = (category: keyof CatalogCategories) => {
+	const hideCategory = (category: Category) => {
 		setIsVisible((state) => ({
 			...state,
 			[category]: false,

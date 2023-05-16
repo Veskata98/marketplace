@@ -21,11 +21,6 @@ export const Header = () => {
 						Home
 					</Link>
 				</li>
-				<li>
-					<Link to="/catalog" className="text-gray-800 hover:text-gray-900 font-semibold">
-						Catalog
-					</Link>
-				</li>
 				{!user ? (
 					<>
 						<li>
@@ -43,6 +38,11 @@ export const Header = () => {
 					</>
 				) : (
 					<>
+						<li>
+							<Link to="/listing/create" className="text-gray-800 hover:text-gray-900 font-semibold">
+								Create Listing
+							</Link>
+						</li>
 						<li>
 							<Link to={`/profile/${user.uid}`} className="flex gap-1 items-center justify-center ">
 								<img

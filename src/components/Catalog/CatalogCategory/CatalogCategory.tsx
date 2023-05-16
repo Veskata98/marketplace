@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getCountFromServer, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 
-import { CATEGORIES, scrollToBottom } from '../../../utils/helpers';
-import { Category, Listing } from '../../../types';
+import { categoriesWithSubcategories, scrollToBottom } from '../../../utils/helpers';
+import { CategoryWithSubcategories, Listing } from '../../../types';
 
 import Spinner from '../../Spinner/Spinner';
 import { listingsRef } from '../../../utils/firebaseRefs';
@@ -51,14 +51,16 @@ const CatalogCategory = () => {
 	return (
 		<div className="flex gap-4 justify-between w-10/12">
 			<div className="w-1/5 bg-slate-200 pt-2">
-				<h2 className="text-xl font-bold mb-4 text-center">{category && CATEGORIES[category as Category]}</h2>
+				<h2 className="text-xl font-bold mb-4 text-center">
+					{category && categoriesWithSubcategories[category as keyof CategoryWithSubcategories]}
+				</h2>
 			</div>
 			<div className="w-4/5 pb-16 relative">
 				{isLoading ? (
 					<Spinner />
 				) : (
 					<>
-						<Link to="/catalog" className="absolute text-lg p-4 right-0 hover:text-orange-400">
+						<Link to="/" className="absolute text-lg p-4 right-0 hover:text-orange-400">
 							Back
 						</Link>
 						{listings.length ? (

@@ -5,8 +5,6 @@ import { useContext } from 'react';
 import { listingsRef } from '../utils/firebaseRefs';
 
 const useListing = () => {
-	console.log('uselisting rendered');
-
 	const { user } = useContext(AuthContext);
 
 	const addListing = async (listing: Listing) => {
