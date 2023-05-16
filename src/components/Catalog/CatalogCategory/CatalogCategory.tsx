@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getCountFromServer, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 
-import { categoriesWithSubcategories, scrollToBottom } from '../../../utils/helpers';
-import { CategoryWithSubcategories, Listing } from '../../../types';
+import { scrollToBottom } from '../../../utils/helpers';
+import { categoriesWithSubcategories, Listing } from '../../../types';
 
 import Spinner from '../../Spinner/Spinner';
 import { listingsRef } from '../../../utils/firebaseRefs';
@@ -15,14 +15,14 @@ const CatalogCategory = () => {
 	const [maxLimit, setMaxLimit] = useState(20);
 	const [totalListingCount, setTotalListingCount] = useState(0);
 
-	const { category } = useParams<{ category: string }>();
+	const { category, subcategory } = useParams<{ category: string; subcategory: string }>();
 
 	useEffect(() => {
 		(async () => {
 			const result: Listing[] = [];
 			const queryFromDB = query(
 				listingsRef,
-				where('subcategory', '==', category),
+				where('subcategory', '==', subcategory),
 				orderBy('createdAt', 'desc'),
 				limit(maxLimit)
 			);
@@ -52,7 +52,7 @@ const CatalogCategory = () => {
 		<div className="flex gap-4 justify-between w-10/12">
 			<div className="w-1/5 bg-slate-200 pt-2">
 				<h2 className="text-xl font-bold mb-4 text-center">
-					{category && categoriesWithSubcategories[category as keyof CategoryWithSubcategories]}
+					{category && subcategory && categoriesWithSubcategories[category].subcategories[subcategory]}
 				</h2>
 			</div>
 			<div className="w-4/5 pb-16 relative">

@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
-import { Listing, Category } from '../../../types';
+import { Listing, categoriesWithSubcategories } from '../../../types';
 
 import defaultAvatar from '../../../assets/images/defaultAvatar.png';
-import { categoriesWithSubcategories } from '../../../utils/helpers';
-import { CategoryWithSubcategories } from '../../../types';
 
 const SingleListing = () => {
 	const [listing, setListing] = useState<Listing>();
@@ -37,15 +35,15 @@ const SingleListing = () => {
 				<div className="p-6">
 					<h1 className="text-2xl font-bold mb-2 mt-4">{listing?.title}</h1>
 					<p className="text-gray-700 text-base mb-4">
-						{listing?.category && (
+						{listing?.category && typeof listing.category === 'string' && (
 							<Link to={`/catalog/${listing.category}`} className="hover:text-orange-400">
-								{listing.category.charAt(0).toUpperCase() + listing.category.slice(1)}
+								{categoriesWithSubcategories[listing.category].label}
 							</Link>
-						)}{' '}
-						{'>'}{' '}
-						{listing?.subcategory && (
+						)}
+						<span className="mx-2">{'>'}</span>
+						{listing?.subcategory && typeof listing.subcategory === 'string' && (
 							<Link to={`/catalog/${listing.subcategory}`} className="hover:text-orange-400">
-								{categoriesWithSubcategories[listing?.subcategory as keyof CategoryWithSubcategories]}
+								{categoriesWithSubcategories[listing.category].subcategories[listing.subcategory]}
 							</Link>
 						)}
 					</p>

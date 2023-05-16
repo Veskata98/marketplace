@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { CategoryWithSubcategories, Listing } from '../../../types';
+import { categoriesWithSubcategories, Listing } from '../../../types';
 
 import brokenImg from '../../../assets/images/broken-img.png';
 import { Link } from 'react-router-dom';
-import { categoriesWithSubcategories } from '../../../utils/helpers';
 
 type ListingCardProps = {
 	listing: Listing;
@@ -34,8 +33,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 					<h3 className="text-lg font-semibold mb-2">{listing.title}</h3>
 					<p className="text-gray-600 text-sm mb-2">${listing.price}</p>
 					<p className="text-gray-600 text-sm mb-2">
-						{listing.subcategory &&
-							categoriesWithSubcategories[listing.subcategory as keyof CategoryWithSubcategories]}
+						{categoriesWithSubcategories[listing.category].subcategories[listing.subcategory]}
 					</p>
 					<p className="text-gray-500 text-sm">{formattedDate}</p>
 				</div>

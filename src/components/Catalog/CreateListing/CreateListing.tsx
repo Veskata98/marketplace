@@ -1,8 +1,7 @@
 import { useContext, useState } from 'react';
 import useListing from '../../../hooks/useListing';
 import { AuthContext } from '../../../contexts/AuthContext';
-import { CATEGORY_LABELS, categoriesWithSubcategories } from '../../../utils/helpers';
-import { Category, CategoryWithSubcategories } from '../../../types';
+import { categoriesWithSubcategories } from '../../../types';
 
 const CreateListing = () => {
 	const [listingData, setListingData] = useState({
@@ -43,7 +42,7 @@ const CreateListing = () => {
 						<option value="">Select a category</option>
 						{Object.keys(categoriesWithSubcategories).map((category) => (
 							<option key={category} value={category}>
-								{CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS].label}
+								{category}
 							</option>
 						))}
 					</select>
@@ -60,13 +59,13 @@ const CreateListing = () => {
 									setListingData((oldData) => ({ ...oldData, subcategory: e.target.value }))
 								}>
 								<option value="">Select a subcategory</option>
-								{Object.entries(
-									CATEGORY_LABELS[listingData.category as keyof typeof CATEGORY_LABELS].subcategories
-								).map((subcategory) => (
-									<option key={subcategory[0]} value={subcategory[0]}>
-										{subcategory[1]}
-									</option>
-								))}
+								{Object.entries(categoriesWithSubcategories[listingData.category].subcategories).map(
+									(subcategory) => (
+										<option key={subcategory[0]} value={subcategory[0]}>
+											{subcategory[1]}
+										</option>
+									)
+								)}
 							</select>
 						</>
 					)}
