@@ -13,7 +13,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 	};
 
 	return (
-		<Link to={`/catalog/listing/${listing.id}`}>
+		<Link to={`/catalog/${listing.category}/${listing.subcategory}/${listing.id}`}>
 			<div className="bg-white rounded-md shadow-md overflow-hidden w-72">
 				{imageError ? (
 					<img src={brokenImg} alt={listing.title} className="w-full h-48 object-cover border-b p-2" />

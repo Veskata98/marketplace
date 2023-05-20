@@ -27,7 +27,7 @@ const App = () => {
 						<Route path="/" element={<Catalog />} />
 						<Route path="/catalog/:category" element={<CatalogCategory />} />
 						<Route path="/catalog/:category/:subcategory" element={<CatalogCategory />} />
-						<Route path="/catalog/listing/:listingId" element={<SingleListing />} />
+						<Route path="/catalog/:category/:subcategory/:listingId" element={<SingleListing />} />
 						<Route path="/listing/create" element={<CreateListing />} />
 
 						<Route path="/profile/:uid" element={<Profile />} />

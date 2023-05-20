@@ -1,16 +1,25 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import { Listing, categoriesWithSubcategories } from '../../../types';
 
 import defaultAvatar from '../../../assets/images/defaultAvatar.png';
+import brokenImg from '../../../assets/images/broken-img.png';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/AuthContext';
 
 const SingleListing = () => {
 	const [listing, setListing] = useState<Listing>();
-	const navigate = useNavigate();
+	const { user } = useContext(AuthContext);
+	// const navigate = useNavigate();
 
 	const { listingId } = useParams();
+	const navigate = useNavigate();
+
+	const goBack = () => {
+		navigate(-1);
+	};
 
 	useEffect(() => {
 		(async () => {
@@ -26,12 +35,17 @@ const SingleListing = () => {
 
 	return (
 		<div className="flex gap-10 w-10/12 mb-16">
-			<div className="w-3/4 mx-auto mt-10 p-4 bg-white rounded-lg overflow-hidden shadow-md">
+			<div className="w-3/4 mx-auto mt-10 p-4 bg-white rounded-lg overflow-hidden shadow-md relative">
 				<img
-					className="w-full h-80 object-contain object-center"
-					src={listing?.imageUrl}
+					className="w-full h-80 object-contain object-center "
+					src={listing?.imageUrl || brokenImg}
 					alt={listing?.title}
 				/>
+				<button
+					onClick={goBack}
+					className="absolute top-5 left-5 p-2 bg-orange-300 text-black rounded px-4 shadow-lg hover:bg-orange-200 transition-all">
+					Back
+				</button>
 				<div className="p-6">
 					<h1 className="text-2xl font-bold mb-2 mt-4">{listing?.title}</h1>
 					<p className="text-gray-700 text-base mb-4">
@@ -40,9 +54,11 @@ const SingleListing = () => {
 								{categoriesWithSubcategories[listing.category].label}
 							</Link>
 						)}
-						<span className="mx-2">{'>'}</span>
-						{listing?.subcategory && typeof listing.subcategory === 'string' && (
-							<Link to={`/catalog/${listing.subcategory}`} className="hover:text-orange-400">
+						<span className="mx-2">{'➜'}</span>
+						{typeof listing?.subcategory === 'string' && (
+							<Link
+								to={`/catalog/${listing.category}/${listing.subcategory}`}
+								className="hover:text-orange-400">
 								{categoriesWithSubcategories[listing.category].subcategories[listing.subcategory]}
 							</Link>
 						)}
@@ -67,6 +83,7 @@ const SingleListing = () => {
 						</div>
 					</div>
 				</div>
+				{user && (listing?.creatorId === user?.uid ? <div>Is Owner</div> : <div>Not Owner</div>)}
 			</div>
 		</div>
 	);

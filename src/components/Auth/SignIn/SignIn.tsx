@@ -77,7 +77,7 @@ const SignIn = () => {
 			</button>
 			<span className="absolute bottom-0 right-2">
 				Don't have an account?{' '}
-				<Link to="/auth/signup" className="hover:text-orange-300 underline">
+				<Link to="/auth/signup" className="hover:text-orange-300 hover:underline hover:italic ">
 					Sign Up here
 				</Link>
 			</span>

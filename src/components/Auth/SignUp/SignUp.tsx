@@ -119,7 +119,7 @@ const SignUp = () => {
 			</button>
 			<span className="absolute bottom-0 right-2">
 				Already have account?{' '}
-				<Link to="/auth/signin" className="hover:text-orange-300 underline">
+				<Link to="/auth/signin" className="hover:text-orange-300 hover:underline hover:italic">
 					Sign In here
 				</Link>
 			</span>
