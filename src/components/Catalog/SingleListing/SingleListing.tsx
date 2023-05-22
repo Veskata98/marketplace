@@ -38,7 +38,7 @@ const SingleListing = () => {
 			<div className="w-3/4 mx-auto mt-10 p-4 bg-white rounded-lg overflow-hidden shadow-md relative">
 				<img
 					className="w-full h-80 object-contain object-center "
-					src={listing?.imageUrl || brokenImg}
+					src={(listing?.imageUrl as string) || brokenImg}
 					alt={listing?.title}
 				/>
 				<button
