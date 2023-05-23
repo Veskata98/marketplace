@@ -94,8 +94,8 @@ export const categoriesWithSubcategories: {
 
 export type Listing = {
 	id?: string;
-	creator?: string;
-	creatorAvatar?: string | null;
+	creator: string | null;
+	creatorAvatar: string | null;
 	category: keyof typeof categoriesWithSubcategories;
 	subcategory: keyof (typeof categoriesWithSubcategories)[keyof typeof categoriesWithSubcategories]['subcategories'];
 	creatorId?: string;

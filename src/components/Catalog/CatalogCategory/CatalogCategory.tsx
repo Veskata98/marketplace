@@ -74,7 +74,9 @@ const CatalogCategory = () => {
 				{!subcategory && category && (
 					<ul className="flex flex-col gap-1 align-middle">
 						{Object.entries(categoriesWithSubcategories[category].subcategories).map((x) => (
-							<li className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300">
+							<li
+								key={x[0]}
+								className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300">
 								<Link to={`/catalog/${category}/${x[0]}`} className="hover:text-orange-500">
 									{x[1]}
 								</Link>

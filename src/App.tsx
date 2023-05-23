@@ -13,6 +13,8 @@ import Profile from './components/Profile/Profile';
 import CreateListing from './components/Catalog/CreateListing/CreateListing';
 import CatalogCategory from './components/Catalog/CatalogCategory/CatalogCategory';
 import SingleListing from './components/Catalog/SingleListing/SingleListing';
+import EditListing from './components/Catalog/EditListing/EditListing';
+import NotFound from './components/NotFound/NotFound';
 
 const App = () => {
 	return (
@@ -29,8 +31,11 @@ const App = () => {
 						<Route path="/catalog/:category/:subcategory" element={<CatalogCategory />} />
 						<Route path="/catalog/:category/:subcategory/:listingId" element={<SingleListing />} />
 						<Route path="/listing/create" element={<CreateListing />} />
+						<Route path="/listing/:listingId/edit" element={<EditListing />} />
 
 						<Route path="/profile/:uid" element={<Profile />} />
+
+						<Route path="/404" element={<NotFound />} />
 					</Routes>
 				</Main>
 			</AuthProvider>

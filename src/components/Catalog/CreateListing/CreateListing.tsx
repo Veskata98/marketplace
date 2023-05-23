@@ -26,24 +26,41 @@ const CreateListing = () => {
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (user && imageFile) {
-			setIsLoading(true);
-			await addListing(
-				{
-					title: listingData.title,
-					price: listingData.price,
-					category: listingData.category,
-					subcategory: listingData.subcategory,
-					description: listingData.description,
-					imageUrl: '',
-					creatorId: user.uid,
-					creator: user.displayName as string,
-					creatorAvatar: user.photoURL || null,
-				},
-				imageFile
-			);
-			navigate('/');
+		if (!user || !imageFile) return;
+
+		const formData = Object.values(Object.fromEntries(new FormData(e.currentTarget)));
+
+		if (formData.length !== 6) {
+			console.log('All fields required');
+			return;
 		}
+
+		for (const field of formData) {
+			if (field instanceof File && !field.name) {
+				return;
+			} else {
+				if (!field) return;
+			}
+		}
+
+		setIsLoading(true);
+
+		await addListing(
+			{
+				title: listingData.title,
+				price: listingData.price,
+				category: listingData.category,
+				subcategory: listingData.subcategory,
+				description: listingData.description,
+				imageUrl: '',
+				creatorId: user.uid,
+				creator: user.displayName,
+				creatorAvatar: user.photoURL,
+			},
+			imageFile
+		);
+
+		navigate('/');
 	};
 
 	const avatarChangeHandler = (event: any) => {
@@ -63,10 +80,10 @@ const CreateListing = () => {
 								Image
 							</label>
 							<input
-								id="image"
 								type="file"
 								accept="image/png, image/jpeg"
 								onChange={avatarChangeHandler}
+								name="image"
 								className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 							/>
 						</div>
@@ -75,9 +92,9 @@ const CreateListing = () => {
 								Title
 							</label>
 							<input
-								id="title"
-								className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+								className="shadow appearance-none border rounded w-full p-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								value={listingData.title}
+								name="title"
 								onChange={(e) => setListingData((oldData) => ({ ...oldData, title: e.target.value }))}
 							/>
 						</div>
@@ -86,11 +103,11 @@ const CreateListing = () => {
 								Category
 							</label>
 							<select
-								id="category"
 								className={`${
 									!listingData.category && 'text-gray-500'
 								} shadow appearance-none border cursor-pointer rounded w-full py-2 px-3 bg-white leading-tight focus:outline-none shadow-outline`}
 								value={listingData.category}
+								name="category"
 								onChange={(e) =>
 									setListingData((oldData) => ({
 										...oldData,
@@ -114,11 +131,11 @@ const CreateListing = () => {
 									Subcategory
 								</label>
 								<select
-									id="subcategory"
 									className={`${
 										!listingData.subcategory && 'text-gray-500'
 									} shadow appearance-none border cursor-pointer rounded w-full py-2 px-3 bg-white leading-tight focus:outline-none focus:shadow-outline`}
 									value={listingData.subcategory}
+									name="subcategory"
 									onChange={(e) =>
 										setListingData((oldData) => ({ ...oldData, subcategory: e.target.value }))
 									}>
@@ -140,10 +157,10 @@ const CreateListing = () => {
 								Price
 							</label>
 							<input
-								id="price"
 								className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
 								value={listingData.price || ''}
 								type="number"
+								name="price"
 								onChange={(e) => setListingData((oldData) => ({ ...oldData, price: +e.target.value }))}
 							/>
 						</div>
@@ -152,9 +169,9 @@ const CreateListing = () => {
 								Description
 							</label>
 							<textarea
-								id="description"
 								className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								value={listingData.description}
+								name="description"
 								onChange={(e) =>
 									setListingData((oldData) => ({ ...oldData, description: e.target.value }))
 								}

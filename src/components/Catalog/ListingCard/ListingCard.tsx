@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import moment from 'moment';
 import { categoriesWithSubcategories, ListingCardProps } from '../../../types';
 
 import brokenImg from '../../../assets/images/broken-img.png';
@@ -6,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 const ListingCard = ({ listing }: ListingCardProps) => {
 	const [imageError, setImageError] = useState(false);
-	const formattedDate = new Date(listing.createdAt ?? Date.now()).toLocaleDateString();
+	const formattedDate = moment(listing?.createdAt!).format('h:mm:ss, DD MMMM YYYY');
 
 	const handleImageError = () => {
 		setImageError(true);
