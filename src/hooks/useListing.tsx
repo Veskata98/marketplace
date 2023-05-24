@@ -1,5 +1,5 @@
-import { addDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { addDoc, doc, updateDoc } from 'firebase/firestore';
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { Listing } from '../types';
 import { AuthContext } from '../contexts/AuthContext';
 import { useContext } from 'react';
@@ -9,36 +9,40 @@ import { db, storage } from '../config/firebase';
 const useListing = () => {
 	const { user } = useContext(AuthContext);
 
-	const getListing = async (listingId: string) => {
-		const docRef = doc(db, 'listings', listingId);
-		const docSnap = await getDoc(docRef);
-
-		return docSnap.data() as Listing;
-	};
-
 	const addListing = async (listing: Listing, imageFile: File) => {
 		if (!user) return;
 
-		const resultDoc = await addDoc(listingsRef, {
+		const resultRef = await addDoc(listingsRef, {
 			...listing,
 			createdAt: Date.now(),
 			modifiedAt: null,
 		});
 
-		const storageRef = ref(storage, `${user.uid}/${resultDoc.id}`);
+		const storageRef = ref(storage, `${user.uid}/${resultRef.id}`);
 		const uploadedImage = await uploadBytes(storageRef, imageFile);
 
 		const url = await getDownloadURL(uploadedImage.ref);
-		await updateDoc(resultDoc, { imageUrl: url });
+		await updateDoc(resultRef, { imageUrl: url });
 	};
 
-	const editListing = async (listing: Listing, editData: Partial<Listing>) => {
+	const editListing = async (listing: Listing, editData: Partial<Listing>, imageFile?: File) => {
 		if (!user || user.uid !== listing.creatorId) return;
 
-		console.log(1);
+		if (imageFile && imageFile.name) {
+			const refToImageForDelete = ref(storage, `${listing.creatorId}/${listing.id}`);
+			await deleteObject(refToImageForDelete);
+
+			const storageRef = ref(storage, `${user.uid}/${listing.id}`);
+			const uploadedImage = await uploadBytes(storageRef, imageFile);
+
+			const docRef = doc(db, `/listings/${listing.id}`);
+
+			const url = await getDownloadURL(uploadedImage.ref);
+			await updateDoc(docRef, { imageUrl: url });
+		}
 	};
 
-	return { getListing, addListing, editListing };
+	return { addListing, editListing };
 };
 
 export default useListing;

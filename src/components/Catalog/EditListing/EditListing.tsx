@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
+import brokenImg from '../../../assets/images/broken-img.png';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { Listing, categoriesWithSubcategories } from '../../../types';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import Spinner from '../../Spinner/Spinner';
+import useListing from '../../../hooks/useListing';
 
 const EditListing = () => {
+	const [imageError, setImageError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [imageFile, setImageFile] = useState<File>();
 	const [preview, setPreview] = useState('');
@@ -13,13 +17,16 @@ const EditListing = () => {
 	const { listingId } = useParams();
 	const navigate = useNavigate();
 
+	const { editListing } = useListing();
+
 	useEffect(() => {
 		if (listingId) {
 			const docRef = doc(db, 'listings', listingId);
 			getDoc(docRef)
 				.then((snapshot) => {
-					setListing(snapshot.data() as Listing);
-					setPreview(snapshot.data()!.imageUrl);
+					const data = snapshot.data() as Listing;
+					setListing({ ...data, id: listingId });
+					setPreview(data.imageUrl);
 					setIsLoading(false);
 				})
 				.catch(() => {
@@ -33,16 +40,46 @@ const EditListing = () => {
 	const avatarChangeHandler = (event: any) => {
 		setImageFile(event.target.files[0]);
 		setPreview(URL.createObjectURL(event.target.files[0]));
+		setImageError(false);
+	};
+
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		if (listing) {
+			await editListing(listing, { imageUrl: '' }, imageFile);
+			navigate(`/catalog/${listing.category}/${listing.subcategory}/${listing.id}`, { replace: true });
+		}
+	};
+
+	const handleImageError = () => {
+		setImageError(true);
 	};
 
 	return (
 		<div className="flex h-full w-full justify-center my-10">
 			{!isLoading ? (
-				<form className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
+				<form onSubmit={handleSubmit} className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
 					<h1 className="text-2xl font-bold mb-4">Edit Listing</h1>
 					<div className="mb-8 flex flex-col gap-4">
 						<div>
-							{preview && <img className="w-2/3 m-auto object-contain h-60" src={preview} alt="img" />}
+							<div className="shadow-md">
+								{preview &&
+									(imageError ? (
+										<img
+											src={brokenImg}
+											alt={listing?.title}
+											className="w-2/3 m-auto object-contain h-60"
+										/>
+									) : (
+										<img
+											src={preview}
+											alt={listing?.title}
+											className="w-2/3 m-auto object-contain h-60"
+											onError={handleImageError}
+										/>
+									))}
+							</div>
 							<label className="block text-gray-700 font-bold mb-1" htmlFor="image">
 								Image
 							</label>

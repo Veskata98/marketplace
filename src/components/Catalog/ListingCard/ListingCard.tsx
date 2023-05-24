@@ -22,7 +22,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 					<img
 						src={listing.imageUrl as string}
 						alt={listing.title}
-						className="w-full h-48 object-contain border-b p-2"
+						className="w-full h-48 object-cover border-b p-2"
 						onError={handleImageError}
 					/>
 				)}

@@ -105,4 +105,5 @@ export type Listing = {
 	imageUrl: string;
 	createdAt?: number;
 	modifiedAt?: number;
+	viewers: string[];
 };
