@@ -11,13 +11,16 @@ import { AuthContext } from '../../../contexts/AuthContext';
 import Spinner from '../../Spinner/Spinner';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import useListing from '../../../hooks/useListing';
 
 const SingleListing = () => {
 	const [listing, setListing] = useState<Listing>();
 	const [imageError, setImageError] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const { user } = useContext(AuthContext);
+
+	const { removeListing } = useListing();
 
 	const { listingId } = useParams();
 	const navigate = useNavigate();
@@ -39,7 +42,7 @@ const SingleListing = () => {
 						await updateDoc(docRef, { viewers: arrayUnion(user.uid) });
 					}
 
-					setListing(listingData);
+					setListing({ ...listingData, id: listingId });
 					setIsLoading(false);
 				})
 				.catch((error) => {
@@ -56,6 +59,15 @@ const SingleListing = () => {
 		setImageError(true);
 	};
 
+	const handleListingDelete = async () => {
+		const choice = window.confirm('Are you sure you want to delete this listing?');
+
+		if (choice) {
+			await removeListing(listing!);
+			navigate('/');
+		}
+	};
+
 	const formattedDate = moment(listing?.createdAt).format('h:mm:ss, DD MMMM YYYY');
 
 	return (
@@ -69,19 +81,20 @@ const SingleListing = () => {
 							<img
 								src={brokenImg}
 								alt={listing?.title}
-								className="w-full h-96 object-cover border-b p-2 object-center rounded"
+								className="w-full object-cover border-b p-2 object-center rounded"
 							/>
 						) : (
 							<img
 								src={listing?.imageUrl as string}
 								alt={listing?.title}
-								className="w-full h-96 object-cover object-center rounded"
+								className="w-full object-cover object-center rounded"
+								style={{ height: '500px' }}
 								onError={handleImageError}
 							/>
 						)}
 						<button
 							onClick={goBack}
-							className="absolute top-5 left-5 flex items-center justify-center bg-opacity-20 font-semibold gap-2 px-4 py-2 bg-orange-300 text-black shadow-lg hover:bg-opacity-20 hover:text-white hover:bg-orange-400 transition-colors">
+							className="absolute top-5 left-5 flex items-center justify-center bg-opacity-40 font-semibold gap-2 px-4 py-2 bg-orange-300 text-black shadow-lg hover:bg-opacity-40 hover:text-white hover:bg-orange-400 transition-colors">
 							<svg
 								className="w-4 h-4"
 								fill="none"
@@ -100,9 +113,14 @@ const SingleListing = () => {
 						<div className="w-full bg-slate-200 rounded shadow p-2 mt-4 flex justify-between px-8">
 							<span>Total views: {listing?.viewers?.length || 0}</span>
 							{user && user.uid === listing?.creatorId && (
-								<button onClick={() => navigate(`/listing/${listingId}/edit`)}>
-									<FontAwesomeIcon icon={faPenToSquare} /> Edit
-								</button>
+								<>
+									<button onClick={() => navigate(`/listing/${listingId}/edit`)}>
+										<FontAwesomeIcon icon={faPenToSquare} /> Edit
+									</button>
+									<button onClick={handleListingDelete}>
+										<FontAwesomeIcon icon={faTrash} /> Delete
+									</button>
+								</>
 							)}
 						</div>
 						<div className="p-6">
@@ -131,9 +149,9 @@ const SingleListing = () => {
 							<p className="text-gray-600 text-sm">Created at: {formattedDate}</p>
 						</div>
 					</div>
-					<div className="w-3/12 p-4 mt-10">
+					<div className="w-3/12 p-4 mt-10 bg-slate-200 rounded flex flex-col align-middle items-center">
 						<div className="">
-							<h2 className="text-lg mb-2">Contact Seller</h2>
+							<h2 className="text-lg mb-2 text-center">Contact Seller</h2>
 							<div className="flex items-center">
 								<img
 									className="w-10 h-10 rounded-full mr-4"

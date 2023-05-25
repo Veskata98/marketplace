@@ -7,7 +7,8 @@ import { Link } from 'react-router-dom';
 
 const ListingCard = ({ listing }: ListingCardProps) => {
 	const [imageError, setImageError] = useState(false);
-	const formattedDate = moment(listing?.createdAt!).format('h:mm:ss, DD MMMM YYYY');
+
+	const formattedDate = moment(listing?.createdAt!).fromNow();
 
 	const handleImageError = () => {
 		setImageError(true);

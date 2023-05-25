@@ -1,4 +1,4 @@
-import { addDoc, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { Listing } from '../types';
 import { AuthContext } from '../contexts/AuthContext';
@@ -35,14 +35,24 @@ const useListing = () => {
 			const storageRef = ref(storage, `${user.uid}/${listing.id}`);
 			const uploadedImage = await uploadBytes(storageRef, imageFile);
 
-			const docRef = doc(db, `/listings/${listing.id}`);
+			const docRef = doc(db, `listings/${listing.id}`);
 
 			const url = await getDownloadURL(uploadedImage.ref);
 			await updateDoc(docRef, { imageUrl: url });
 		}
 	};
 
-	return { addListing, editListing };
+	const removeListing = async (listing: Listing) => {
+		if (!user || user.uid !== listing.creatorId) return;
+
+		const docRef = doc(db, `listings/${listing.id}`);
+		await deleteDoc(docRef);
+
+		const listingImageRef = ref(storage, `${user.uid}/${listing.id}`);
+		await deleteObject(listingImageRef);
+	};
+
+	return { addListing, editListing, removeListing };
 };
 
 export default useListing;

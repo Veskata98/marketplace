@@ -76,7 +76,9 @@ const CreateListing = () => {
 					<h1 className="text-2xl font-bold mb-4">Create a New Listing</h1>
 					<div className="mb-8 flex flex-col gap-4">
 						<div>
-							{preview && <img className="w-2/3 m-auto object-contain h-60" src={preview} alt="img" />}
+							{preview && (
+								<img className="w-2/3 m-auto object-cover object-center h-60" src={preview} alt="img" />
+							)}
 							<label className="block text-gray-700 font-bold mb-1" htmlFor="image">
 								Image
 							</label>
