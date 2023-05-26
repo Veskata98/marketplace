@@ -47,7 +47,7 @@ const EditListing = () => {
 		e.preventDefault();
 
 		if (listing) {
-			await editListing(listing, { imageUrl: '' }, imageFile);
+			await editListing(listing, imageFile);
 			navigate(`/catalog/${listing.category}/${listing.subcategory}/${listing.id}`, { replace: true });
 		}
 	};
@@ -64,21 +64,20 @@ const EditListing = () => {
 					<div className="mb-8 flex flex-col gap-4">
 						<div>
 							<div className="shadow-md">
-								{preview &&
-									(imageError ? (
-										<img
-											src={brokenImg}
-											alt={listing?.title}
-											className="w-2/3 m-auto object-contain h-60"
-										/>
-									) : (
-										<img
-											src={preview}
-											alt={listing?.title}
-											className="w-2/3 m-auto object-contain h-60"
-											onError={handleImageError}
-										/>
-									))}
+								{imageError ? (
+									<img
+										src={brokenImg}
+										alt={listing?.title}
+										className="w-full m-auto object-cover object-center h-60"
+									/>
+								) : (
+									<img
+										src={preview}
+										alt={listing?.title}
+										className="w-full m-auto object-cover object-center h-60"
+										onError={handleImageError}
+									/>
+								)}
 							</div>
 							<label className="block text-gray-700 font-bold mb-1" htmlFor="image">
 								Image
@@ -96,7 +95,7 @@ const EditListing = () => {
 								Title
 							</label>
 							<input
-								className="shadow appearance-none border rounded w-full p-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+								className="shadow appearance-none border rounded w-full p-2 leading-tight focus:outline-none focus:shadow-outline"
 								value={listing?.title}
 								name="title"
 								onChange={(e) => setListing((oldData) => ({ ...oldData!, title: e.target.value }))}
@@ -147,7 +146,7 @@ const EditListing = () => {
 								Description
 							</label>
 							<textarea
-								className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+								className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
 								value={listing?.description}
 								name="description"
 								onChange={(e) =>
