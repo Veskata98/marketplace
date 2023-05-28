@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import { categoriesWithSubcategories } from '../../../types';
 
-import CatalogSidebarList from '../CatalogSidebarList/CatalogSidebarList';
-import { Catalog } from '../Catalog';
+import CatalogSidebarList from './CatalogSidebarList/CatalogSidebarList';
+import { CatalogMainSection } from '../CatalogMainSection';
 
 const CatalogWrapper = () => {
 	const [isVisible, setIsVisible] = useState(
@@ -39,8 +39,9 @@ const CatalogWrapper = () => {
 					))}
 				</ul>
 			</div>
-
-			<Catalog />
+			<div className="w-4/5 pb-8">
+				<CatalogMainSection />
+			</div>
 		</div>
 	);
 };

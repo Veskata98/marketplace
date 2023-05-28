@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { categoriesWithSubcategories } from '../../../types';
+import { categoriesWithSubcategories } from '../../../../types';
 
 type CatalogSidebarListProps = {
 	category: string;

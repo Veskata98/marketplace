@@ -182,7 +182,7 @@ const CreateListing = () => {
 						</div>
 					</div>
 					<button
-						className="cursor-pointer text-slate-700 disabled:text-slate-400 w-full bg-orange-300 p-2 rounded"
+						className="cursor-pointer text-slate-700 font-semibold disabled:text-slate-400 w-full bg-orange-300 p-2 rounded"
 						disabled={false}>
 						Create listing
 					</button>

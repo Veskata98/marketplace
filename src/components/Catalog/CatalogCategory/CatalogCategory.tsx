@@ -1,35 +1,11 @@
-import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import { scrollToBottom } from '../../../utils/helpers';
-import { categoriesWithSubcategories, Listing } from '../../../types';
+import { categoriesWithSubcategories } from '../../../types';
 
-import Spinner from '../../Spinner/Spinner';
-import ListingCard from '../ListingCard/ListingCard';
-import useListing from '../../../hooks/useListing';
+import { CatalogMainSection } from '../CatalogMainSection';
 
 const CatalogCategory = () => {
-	const [isLoading, setIsLoading] = useState(true);
-	const [maxLimit, setMaxLimit] = useState(20);
-
 	const { category, subcategory } = useParams<{ category: string; subcategory: string }>();
-
-	const { listings, totalListingCount, getListings } = useListing();
-
-	useEffect(() => {
-		getListings(maxLimit, category, subcategory)
-			.then(() => {
-				setIsLoading(false);
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-	}, [maxLimit, category, subcategory, getListings]);
-
-	const updateMaxLimit = () => {
-		setMaxLimit((oldLimit) => oldLimit + 20);
-		scrollToBottom();
-	};
 
 	return (
 		<div className="flex gap-4 justify-between w-10/12">
@@ -55,38 +31,10 @@ const CatalogCategory = () => {
 				)}
 			</div>
 			<div className="w-4/5 pb-8 relative">
-				{isLoading ? (
-					<Spinner />
-				) : (
-					<>
-						<Link to="/" className="absolute text-lg p-4 right-0 hover:text-orange-400">
-							Back
-						</Link>
-						{listings.length ? (
-							<>
-								<h2 className="font-semibold text-2xl p-4 text-center">Latest listed</h2>
-								<div className="flex gap-4 flex-wrap justify-center">
-									{listings.map((x: Listing) => (
-										<ListingCard key={x.id} listing={x} />
-									))}
-								</div>
-								{totalListingCount > 20 && maxLimit + 20 < totalListingCount && (
-									<div className="flex justify-center mt-4">
-										<button
-											className="text-lg text-orange-500 hover:text-orange-400"
-											onClick={updateMaxLimit}>
-											Show More
-										</button>
-									</div>
-								)}
-							</>
-						) : (
-							<h2 className="flex items-center justify-center text-2xl h-full">
-								There are no listings yet.
-							</h2>
-						)}
-					</>
-				)}
+				<CatalogMainSection category={category} subcategory={subcategory} />
+				<Link to="/" className="absolute text-lg p-4 right-0 top-0 hover:text-orange-400">
+					Back
+				</Link>
 			</div>
 		</div>
 	);

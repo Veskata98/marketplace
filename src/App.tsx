@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 
 import { Header } from './components/Header/Header';
-import { Catalog } from './components/Catalog/Catalog';
+import CatalogWrapper from './components/Catalog/CatalogWrapper/CatalogWrapper';
 
 import SignUp from './components/Auth/SignUp/SignUp';
 import SignIn from './components/Auth/SignIn/SignIn';
@@ -16,7 +16,7 @@ import SingleListing from './components/Catalog/SingleListing/SingleListing';
 import EditListing from './components/Catalog/EditListing/EditListing';
 import NotFound from './components/NotFound/NotFound';
 import { QueryClientProvider, QueryClient } from 'react-query';
-import CatalogWrapper from './components/Catalog/CatalogWrapper/CatalogWrapper';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 const queryClient = new QueryClient();
 
@@ -44,6 +44,7 @@ const App = () => {
 					</Routes>
 				</Main>
 			</AuthProvider>
+			<ReactQueryDevtools initialIsOpen={false} />
 		</QueryClientProvider>
 	);
 };
