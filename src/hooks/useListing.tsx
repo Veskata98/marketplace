@@ -1,31 +1,80 @@
 import {
 	addDoc,
+	arrayUnion,
 	deleteDoc,
 	doc,
 	getCountFromServer,
+	getDoc,
 	getDocs,
 	limit,
 	orderBy,
 	query,
 	updateDoc,
+	where,
 } from 'firebase/firestore';
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { Listing } from '../types';
 import { AuthContext } from '../contexts/AuthContext';
-import { useContext, useState } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { listingsRef } from '../utils/firebaseRefs';
 import { db, storage } from '../config/firebase';
 
 const useListing = () => {
-	const [listings, setListings] = useState<Listing[]>();
+	const [listings, setListings] = useState<Listing[]>([]);
 	const [totalListingCount, setTotalListingCount] = useState(0);
 
 	const { user } = useContext(AuthContext);
 
-	const getListings = async (maxLimit: number) => {
+	const getListing = useCallback(
+		async (listingId: string) => {
+			try {
+				let listing;
+				const docRef = doc(db, 'listings', listingId!);
+
+				const snapshot = await getDoc(docRef);
+
+				if (!snapshot.data()) throw new Error();
+				const listingData = snapshot.data() as Listing;
+
+				if (user && !listingData.viewers.includes(user.uid) && user.uid !== listingData.creatorId) {
+					await updateDoc(docRef, { viewers: arrayUnion(user.uid) });
+				}
+
+				listing = { ...listingData, id: listingId };
+				return listing;
+			} catch (error) {
+				throw new Error('Something went wrong!');
+			}
+		},
+		[user]
+	);
+
+	const getListings = useCallback(async (maxLimit: number, category?: string, subcategory?: string) => {
 		const result: Listing[] = [];
-		const queryFromDB = query(listingsRef, orderBy('createdAt', 'desc'), limit(maxLimit));
-		const queryCount = query(listingsRef);
+
+		let queryFromDB;
+		let queryCount;
+
+		if (subcategory) {
+			queryFromDB = query(
+				listingsRef,
+				where('subcategory', '==', subcategory),
+				orderBy('createdAt', 'desc'),
+				limit(maxLimit)
+			);
+			queryCount = query(listingsRef, where('subcategory', '==', subcategory));
+		} else if (category) {
+			queryFromDB = query(
+				listingsRef,
+				where('category', '==', category),
+				orderBy('createdAt', 'desc'),
+				limit(maxLimit)
+			);
+			queryCount = query(listingsRef, where('category', '==', category));
+		} else {
+			queryFromDB = query(listingsRef, orderBy('createdAt', 'desc'), limit(maxLimit));
+			queryCount = query(listingsRef);
+		}
 
 		const querySnapshot = await getDocs(queryFromDB);
 		const queryCountSnapshot = await getCountFromServer(queryCount);
@@ -39,9 +88,9 @@ const useListing = () => {
 		});
 
 		setListings(result);
-	};
+	}, []);
 
-	const addListing = async (listing: Listing, imageFile: File) => {
+	const addListing = async (listing: Partial<Listing>, imageFile: File) => {
 		if (!user) return;
 
 		const resultRef = await addDoc(listingsRef, {
@@ -90,7 +139,7 @@ const useListing = () => {
 		await deleteObject(listingImageRef);
 	};
 
-	return { listings, totalListingCount, getListings, addListing, editListing, removeListing };
+	return { listings, totalListingCount, getListings, getListing, addListing, editListing, removeListing };
 };
 
 export default useListing;

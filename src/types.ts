@@ -103,7 +103,16 @@ export type Listing = {
 	price: number;
 	description: string;
 	imageUrl: string;
-	createdAt?: number;
+	createdAt: number;
 	modifiedAt?: number;
 	viewers: string[];
+};
+
+export type Message = {
+	sender: string;
+	senderId: string;
+	receiverId: string;
+	text: string;
+	createdAt: number;
+	isReceived: boolean;
 };

@@ -15,10 +15,14 @@ import CatalogCategory from './components/Catalog/CatalogCategory/CatalogCategor
 import SingleListing from './components/Catalog/SingleListing/SingleListing';
 import EditListing from './components/Catalog/EditListing/EditListing';
 import NotFound from './components/NotFound/NotFound';
+import { QueryClientProvider, QueryClient } from 'react-query';
+import CatalogWrapper from './components/Catalog/CatalogWrapper/CatalogWrapper';
+
+const queryClient = new QueryClient();
 
 const App = () => {
 	return (
-		<>
+		<QueryClientProvider client={queryClient}>
 			<AuthProvider>
 				<Header />
 				<Main>
@@ -26,7 +30,7 @@ const App = () => {
 						<Route path="/auth/signin" element={<SignIn />} />
 						<Route path="/auth/signup" element={<SignUp />} />
 
-						<Route path="/" element={<Catalog />} />
+						<Route path="/" element={<CatalogWrapper />} />
 						<Route path="/catalog/:category" element={<CatalogCategory />} />
 						<Route path="/catalog/:category/:subcategory" element={<CatalogCategory />} />
 						<Route path="/catalog/:category/:subcategory/:listingId" element={<SingleListing />} />
@@ -34,12 +38,13 @@ const App = () => {
 						<Route path="/listing/:listingId/edit" element={<EditListing />} />
 
 						<Route path="/profile/:uid" element={<Profile />} />
+						<Route path="/profile/my-messages" element={<Profile />} />
 
 						<Route path="/404" element={<NotFound />} />
 					</Routes>
 				</Main>
 			</AuthProvider>
-		</>
+		</QueryClientProvider>
 	);
 };
 

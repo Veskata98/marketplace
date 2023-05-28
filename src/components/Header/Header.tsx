@@ -44,6 +44,11 @@ export const Header = () => {
 							</Link>
 						</li>
 						<li>
+							<Link to="/profile/my-messages" className="text-gray-800 hover:text-gray-900 font-semibold">
+								My messages
+							</Link>
+						</li>
+						<li>
 							<Link to={`/profile/${user.uid}`} className="flex gap-1 items-center justify-center ">
 								<img
 									className="w-10 h-10 rounded-full object-contain"

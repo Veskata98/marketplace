@@ -1,61 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getCountFromServer, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 
 import { scrollToBottom } from '../../../utils/helpers';
 import { categoriesWithSubcategories, Listing } from '../../../types';
 
 import Spinner from '../../Spinner/Spinner';
-import { listingsRef } from '../../../utils/firebaseRefs';
 import ListingCard from '../ListingCard/ListingCard';
+import useListing from '../../../hooks/useListing';
 
 const CatalogCategory = () => {
-	const [listings, setListings] = useState<Listing[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [maxLimit, setMaxLimit] = useState(20);
-	const [totalListingCount, setTotalListingCount] = useState(0);
 
 	const { category, subcategory } = useParams<{ category: string; subcategory: string }>();
 
+	const { listings, totalListingCount, getListings } = useListing();
+
 	useEffect(() => {
-		(async () => {
-			const result: Listing[] = [];
-			let queryFromDB;
-
-			if (subcategory) {
-				queryFromDB = query(
-					listingsRef,
-					where('subcategory', '==', subcategory),
-					orderBy('createdAt', 'desc'),
-					limit(maxLimit)
-				);
-			} else {
-				queryFromDB = query(
-					listingsRef,
-					where('category', '==', category),
-					orderBy('createdAt', 'desc'),
-					limit(maxLimit)
-				);
-			}
-
-			const queryCount = subcategory
-				? query(listingsRef, where('subcategory', '==', subcategory))
-				: query(listingsRef, where('category', '==', category));
-
-			const querySnapshot = await getDocs(queryFromDB);
-			const queryCountSnapshot = await getCountFromServer(queryCount);
-			setTotalListingCount(queryCountSnapshot.data().count);
-
-			querySnapshot.forEach(async (doc) => {
-				const data = doc.data();
-				data.id = doc.id;
-
-				result.push(data as Listing);
+		getListings(maxLimit, category, subcategory)
+			.then(() => {
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				console.error(error);
 			});
-			setListings(result);
-			setIsLoading(false);
-		})();
-	}, [maxLimit, category, subcategory]);
+	}, [maxLimit, category, subcategory, getListings]);
 
 	const updateMaxLimit = () => {
 		setMaxLimit((oldLimit) => oldLimit + 20);

@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import moment from 'moment';
+import { Link } from 'react-router-dom';
+
 import { categoriesWithSubcategories, ListingCardProps } from '../../../types';
 
 import brokenImg from '../../../assets/images/broken-img.png';
-import { Link } from 'react-router-dom';
+import { formatTimeToRelative } from '../../../utils/helpers';
 
 const ListingCard = ({ listing }: ListingCardProps) => {
 	const [imageError, setImageError] = useState(false);
-
-	const formattedDate = moment(listing.createdAt).fromNow();
 
 	const handleImageError = () => {
 		setImageError(true);
@@ -33,7 +32,7 @@ const ListingCard = ({ listing }: ListingCardProps) => {
 					<p className="text-gray-600 text-sm mb-2 capitalize">
 						{categoriesWithSubcategories[listing.category].subcategories[listing.subcategory]}
 					</p>
-					<p className="text-gray-500 text-sm">{formattedDate}</p>
+					<p className="text-gray-500 text-sm">{formatTimeToRelative(listing.createdAt)}</p>
 				</div>
 			</div>
 		</Link>
