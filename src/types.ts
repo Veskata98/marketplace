@@ -115,4 +115,5 @@ export type Message = {
 	text: string;
 	createdAt: number;
 	isReceived: boolean;
+	listingId: string;
 };

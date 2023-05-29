@@ -7,6 +7,7 @@ import useMessage from '../../../../hooks/useMessage';
 
 const ContactSellerPanel = ({ listing }: ListingCardProps) => {
 	const [message, setMessage] = useState('');
+	const [messageIsSent, setMessageIsSent] = useState(false);
 
 	const { user } = useContext(AuthContext);
 	const { sendMessage } = useMessage();
@@ -14,8 +15,10 @@ const ContactSellerPanel = ({ listing }: ListingCardProps) => {
 	const handleSendMessage = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (message) {
-			sendMessage({ text: message, receiverId: listing.creatorId });
-			setMessage('');
+			sendMessage({ text: message, receiverId: listing.creatorId, listingId: listing.id }).then((result) => {
+				setMessageIsSent(result);
+				setMessage('');
+			});
 		}
 	};
 
@@ -39,19 +42,23 @@ const ContactSellerPanel = ({ listing }: ListingCardProps) => {
 					</div>
 				</div>
 			</div>
-			{user && listing.creatorId !== user?.uid && (
-				<form onSubmit={handleSendMessage} className="mt-4">
-					<textarea
-						className="w-full min-h-[200px] p-2 mb-2 border border-gray-300 rounded resize-y focus-visible:border-orange-500 focus-visible:border-2 focus-visible:outline-none"
-						placeholder="Message to the seller..."
-						name="messageText"
-						onChange={(e) => setMessage(e.target.value)}
-						value={message}></textarea>
-					<button className="bg-orange-500 text-white font-semibold py-2 px-4 rounded hover:bg-orange-600">
-						Send Message
-					</button>
-				</form>
-			)}
+			{user &&
+				listing.creatorId !== user?.uid &&
+				(!messageIsSent ? (
+					<form onSubmit={handleSendMessage} className="mt-4">
+						<textarea
+							className="w-full min-h-[200px] p-2 mb-2 border border-gray-300 rounded resize-y focus-visible:border-orange-500 focus-visible:border-2 focus-visible:outline-none"
+							placeholder="Message to the seller..."
+							name="messageText"
+							onChange={(e) => setMessage(e.target.value)}
+							value={message}></textarea>
+						<button className="w-full bg-orange-500 text-white font-semibold py-2 px-4 rounded hover:bg-orange-600">
+							Send Message
+						</button>
+					</form>
+				) : (
+					<span className="w-full flex justify-center mt-16 text-lg">Message sent to Seller!</span>
+				))}
 		</div>
 	);
 };

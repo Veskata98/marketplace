@@ -1,6 +1,19 @@
-import { getCountFromServer, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
+import {
+	arrayUnion,
+	doc,
+	getCountFromServer,
+	getDoc,
+	getDocs,
+	limit,
+	orderBy,
+	query,
+	updateDoc,
+	where,
+} from 'firebase/firestore';
 import { Listing } from '../types';
 import { listingsRef } from '../utils/firebaseRefs';
+import { db } from '../config/firebase';
+import { User } from 'firebase/auth';
 
 export const getListings = async (maxLimit: number, category?: string, subcategory?: string) => {
 	const result: Listing[] = [];
@@ -40,4 +53,23 @@ export const getListings = async (maxLimit: number, category?: string, subcatego
 	});
 
 	return { listings: result, totalListingCount: queryCountSnapshot.data().count };
+};
+
+export const getListing = async (listingId: string | undefined, user: User | null) => {
+	if (!listingId) throw new Error('Listing ID missing!');
+
+	let listing;
+	const docRef = doc(db, 'listings', listingId!);
+
+	const snapshot = await getDoc(docRef);
+
+	if (!snapshot.data()) throw new Error();
+	const listingData = snapshot.data() as Listing;
+
+	if (user && !listingData.viewers.includes(user.uid) && user.uid !== listingData.creatorId) {
+		await updateDoc(docRef, { viewers: arrayUnion(user.uid) });
+	}
+
+	listing = { ...listingData, id: listingId };
+	return listing;
 };

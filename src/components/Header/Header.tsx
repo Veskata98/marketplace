@@ -45,7 +45,7 @@ export const Header = () => {
 						</li>
 						<li>
 							<Link to="/profile/my-messages" className="text-gray-800 hover:text-gray-900 font-semibold">
-								My messages
+								Inbox
 							</Link>
 						</li>
 						<li>
