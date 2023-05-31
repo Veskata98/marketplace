@@ -1,10 +1,11 @@
-import { useContext } from 'react';
+import { useContext, useCallback } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 
-import { Message } from '../types';
+import { Listing, Message } from '../types';
 
 import { messagesRef } from '../utils/firebaseRefs';
-import { addDoc } from 'firebase/firestore';
+import { addDoc, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const useMessage = () => {
 	const { user } = useContext(AuthContext);
@@ -23,7 +24,38 @@ const useMessage = () => {
 		return true;
 	};
 
-	return { sendMessage };
+	const setMessageAsSeen = async (message: Message) => {
+		console.log(message);
+
+		if (!user) return false;
+
+		if (message.receiverId === user.uid && !message.isReceived) {
+			const messageRef = doc(db, 'messages', message.id);
+			await updateDoc(messageRef, { isReceived: true });
+			return true;
+		} else {
+			return false;
+		}
+	};
+	const canSendMessage = useCallback(
+		async (listing: Listing) => {
+			if (!user) return;
+
+			if (user.uid === listing.creatorId) return;
+
+			const queryString = query(
+				messagesRef,
+				where('senderId', '==', user.uid),
+				where('listingId', '==', listing.id)
+			);
+			const snapshot = await getDocs(queryString);
+
+			return snapshot.size === 0;
+		},
+		[user]
+	);
+
+	return { sendMessage, setMessageAsSeen, canSendMessage };
 };
 
 export default useMessage;

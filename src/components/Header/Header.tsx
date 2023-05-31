@@ -4,9 +4,11 @@ import { AuthContext } from '../../contexts/AuthContext';
 import useAuth from '../../hooks/useAuth';
 
 import defaultAvatar from '../../assets/images/defaultAvatar.png';
+import { NotificationContext } from '../../contexts/NotificationContext';
 
 export const Header = () => {
 	const { user } = useContext(AuthContext);
+	const { notifications } = useContext(NotificationContext);
 
 	const { basicSignOut } = useAuth();
 
@@ -44,7 +46,14 @@ export const Header = () => {
 							</Link>
 						</li>
 						<li>
-							<Link to="/profile/my-messages" className="text-gray-800 hover:text-gray-900 font-semibold">
+							<Link
+								to="/messages"
+								className="text-gray-800 hover:text-gray-900 font-semibold flex items-center">
+								{notifications !== 0 && (
+									<span className="bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full mr-1">
+										{notifications}
+									</span>
+								)}
 								Inbox
 							</Link>
 						</li>

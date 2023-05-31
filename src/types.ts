@@ -109,6 +109,7 @@ export type Listing = {
 };
 
 export type Message = {
+	id: string;
 	sender: string;
 	senderId: string;
 	receiverId: string;

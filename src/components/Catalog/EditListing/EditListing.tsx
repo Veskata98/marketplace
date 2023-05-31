@@ -7,6 +7,12 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import Spinner from '../../Spinner/Spinner';
 import useListing from '../../../hooks/useListing';
+import { useMutation, useQueryClient } from 'react-query';
+
+type EditListingItems = {
+	listing: Partial<Listing>;
+	imageFile: File | undefined;
+};
 
 const EditListing = () => {
 	const [imageError, setImageError] = useState(false);
@@ -14,10 +20,19 @@ const EditListing = () => {
 	const [imageFile, setImageFile] = useState<File>();
 	const [preview, setPreview] = useState('');
 	const [listing, setListing] = useState<Listing>();
+
 	const { listingId } = useParams();
 	const navigate = useNavigate();
 
+	const queryClient = useQueryClient();
+
 	const { editListing } = useListing();
+
+	const { mutateAsync } = useMutation(({ listing, imageFile }: EditListingItems) => editListing(listing, imageFile), {
+		onSuccess: () => {
+			queryClient.invalidateQueries(['listing', listingId]);
+		},
+	});
 
 	useEffect(() => {
 		if (listingId) {
@@ -47,7 +62,7 @@ const EditListing = () => {
 		e.preventDefault();
 
 		if (listing) {
-			await editListing(listing, imageFile);
+			await mutateAsync({ listing, imageFile });
 			navigate(`/catalog/${listing.category}/${listing.subcategory}/${listing.id}`, { replace: true });
 		}
 	};

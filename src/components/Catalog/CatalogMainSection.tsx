@@ -18,7 +18,7 @@ export const CatalogMainSection = ({ category, subcategory }: CatalogMainSection
 	const [maxLimit, setMaxLimit] = useState(20);
 
 	const query = useQuery('listings', () => getListings(maxLimit, category, subcategory), {
-		refetchOnWindowFocus: false,
+		staleTime: 5 * (60 * 1000),
 	});
 
 	if (query.isLoading) {
