@@ -55,7 +55,7 @@ const CreateListing = () => {
 				imageUrl: '',
 				creatorId: user.uid,
 				creator: user.displayName,
-				creatorAvatar: user.photoURL,
+				creatorAvatar: user.photoURL || null,
 				viewers: [],
 			},
 			imageFile

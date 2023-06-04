@@ -16,7 +16,7 @@ const ContactSellerPanel = ({ listing }: ListingCardProps) => {
 	const handleSendMessage = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (message) {
-			sendMessage({ text: message, receiverId: listing.creatorId, listingId: listing.id }).then((result) => {
+			sendMessage({ text: message, receiverId: listing.creatorId, listingId: listing.id }).then(() => {
 				setIsPossibleToSendMessage(false);
 				setMessage('');
 			});
@@ -43,12 +43,16 @@ const ContactSellerPanel = ({ listing }: ListingCardProps) => {
 				<h2 className="text-lg font-semibold mb-2 text-center">Contact Seller</h2>
 				<div className="flex items-center">
 					{imageError ? (
-						<img src={defaultAvatar} alt={listing.creator!} className="w-10 h-10 rounded-full mr-4" />
+						<img
+							src={defaultAvatar}
+							alt={listing.creator!}
+							className="w-10 h-10 rounded-full mr-4 shadow-md"
+						/>
 					) : (
 						<img
-							src={listing.creatorAvatar as string}
+							src={(listing.creatorAvatar as string) || defaultAvatar}
 							alt={listing.creator!}
-							className="w-10 h-10 rounded-full mr-4"
+							className="w-10 h-10 rounded-full mr-4 shadow-md"
 							onError={handleImageError}
 						/>
 					)}

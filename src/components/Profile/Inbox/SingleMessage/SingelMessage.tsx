@@ -4,8 +4,11 @@ import { useParams } from 'react-router-dom';
 import useMessage from '../../../../hooks/useMessage';
 import { getMessage } from '../../../../api/messages';
 import { NotificationContext } from '../../../../contexts/NotificationContext';
+import { AuthContext } from '../../../../contexts/AuthContext';
 
 const SingleMessage = () => {
+	const { user } = useContext(AuthContext);
+
 	const { messageId } = useParams();
 	const queryClient = useQueryClient();
 
@@ -21,11 +24,11 @@ const SingleMessage = () => {
 	});
 
 	useEffect(() => {
-		if (data && !data.isReceived) {
+		if (data && !data.isReceived && data.receiverId === user?.uid) {
 			mutate();
 			notificationCountReduce();
 		}
-	}, [data, mutate, notificationCountReduce]);
+	}, [data, mutate, notificationCountReduce, user?.uid]);
 
 	return <div>{messageId}</div>;
 };

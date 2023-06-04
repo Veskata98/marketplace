@@ -73,3 +73,13 @@ export const getListing = async (listingId: string | undefined, user: User | nul
 	listing = { ...listingData, id: listingId };
 	return listing;
 };
+
+export const getMyListings = async (userId: string) => {
+	const listings: Listing[] = [];
+	const queryString = query(listingsRef, where('creatorId', '==', userId));
+	const snapshot = await getDocs(queryString);
+
+	snapshot.forEach((s) => listings.push({ ...(s.data() as Listing), id: s.id }));
+
+	return listings;
+};

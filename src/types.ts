@@ -117,4 +117,11 @@ export type Message = {
 	createdAt: number;
 	isReceived: boolean;
 	listingId: string;
+	replies?: Reply[];
+};
+
+export type Reply = {
+	senderId: string;
+	receiverId: string;
+	text: string;
 };

@@ -6,7 +6,7 @@ import brokenImg from '../../../../assets/images/broken-img.png';
 import { ListingCardProps, categoriesWithSubcategories } from '../../../../types';
 import { Link, useNavigate } from 'react-router-dom';
 import useListing from '../../../../hooks/useListing';
-import { formatTimeToReadableString } from '../../../../utils/helpers';
+import { formatTimeToHourAndDateOnly } from '../../../../utils/helpers';
 import { AuthContext } from '../../../../contexts/AuthContext';
 
 const SingleListingMainSection = ({ listing }: ListingCardProps) => {
@@ -80,9 +80,7 @@ const SingleListingMainSection = ({ listing }: ListingCardProps) => {
 				</div>
 
 				<p className="shadow-inner bg-slate-100 min-h-[150px] rounded px-4 py-2 mb-4">{listing.description}</p>
-				<p className="text-gray-600 text-sm text-right">
-					Created at: {formatTimeToReadableString(listing.createdAt!)}
-				</p>
+				<p className="text-gray-600 text-sm text-right">{formatTimeToHourAndDateOnly(listing.createdAt!)}</p>
 			</div>
 		</div>
 	);

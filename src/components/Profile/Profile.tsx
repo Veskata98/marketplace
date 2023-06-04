@@ -1,12 +1,16 @@
 import { useParams } from 'react-router-dom';
-import { getMessages } from '../../api/messages';
+import MyListingSection from './ProfilePage/MyListingSection';
+import ProfileMainSection from './ProfilePage/ProfileMainSection';
 
 const Profile = () => {
 	const { uid } = useParams();
 
-	getMessages(uid!).then((data) => console.log(data));
-
-	return <div>{uid}</div>;
+	return (
+		<div className="flex w-3/5">
+			<ProfileMainSection />
+			<MyListingSection userId={uid!} />
+		</div>
+	);
 };
 
 export default Profile;

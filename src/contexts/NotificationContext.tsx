@@ -13,19 +13,20 @@ export const NotificationProvider = ({ children }: ChildrenProps) => {
 	const { user } = useContext(AuthContext);
 	const [notifications, setNotifications] = useState(0);
 
-	const { data } = useQuery(['notifications'], () => getMessageNotifications(user!.uid), {
+	const { data, refetch } = useQuery(['notifications'], () => getMessageNotifications(user?.uid), {
 		refetchInterval: 1 * 60 * 1000,
 		enabled: Boolean(user?.uid),
 	});
 
 	useEffect(() => {
 		if (user) {
+			refetch();
 			setNotifications(data || 0);
 		}
-	}, [user, data]);
+	}, [user, data, refetch]);
 
 	const notificationCountReduce = useCallback(() => {
-		setNotifications((count) => count - 1);
+		setNotifications((count) => (count - 1 >= 0 ? count - 1 : 0));
 	}, []);
 
 	return (

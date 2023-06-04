@@ -42,7 +42,9 @@ export const getMessage = async (messageId: string) => {
 	return message;
 };
 
-export const getMessageNotifications = async (userId: string) => {
+export const getMessageNotifications = async (userId: string | undefined) => {
+	if (!userId) return;
+
 	let newNotifications = 0;
 	const queryString = query(messagesRef, where('receiverId', '==', userId), where('isReceived', '==', false));
 	const snapshot = await getDocs(queryString);

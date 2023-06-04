@@ -8,7 +8,7 @@ import Spinner from '../../Spinner/Spinner';
 const Inbox = () => {
 	const { user } = useContext(AuthContext);
 
-	const { data, isLoading } = useQuery(['messages'], () => getMessages(user!.uid), { cacheTime: 0 });
+	const { data, isLoading } = useQuery(['messages'], () => getMessages(user!.uid));
 
 	if (isLoading) {
 		return (

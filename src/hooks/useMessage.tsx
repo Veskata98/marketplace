@@ -25,8 +25,6 @@ const useMessage = () => {
 	};
 
 	const setMessageAsSeen = async (message: Message) => {
-		console.log(message);
-
 		if (!user) return false;
 
 		if (message.receiverId === user.uid && !message.isReceived) {
