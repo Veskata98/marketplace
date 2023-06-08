@@ -70,7 +70,9 @@ export const getListing = async (listingId: string | undefined, user: User | nul
 		await updateDoc(docRef, { viewers: arrayUnion(user.uid) });
 	}
 
-	listing = { ...listingData, id: listingId };
+	const creatorAvatarSnapshot = await getDoc(doc(db, 'users', listingData.creatorId!));
+
+	listing = { ...listingData, id: listingId, creatorAvatar: creatorAvatarSnapshot.data()?.photoURL || null };
 	return listing;
 };
 

@@ -5,13 +5,15 @@ import {
 	createUserWithEmailAndPassword,
 	updateProfile,
 	signOut,
+	User,
 } from 'firebase/auth';
 import { auth, db } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { FirebaseError } from 'firebase/app';
 import { AuthContext } from '../contexts/AuthContext';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc, getDoc } from 'firebase/firestore';
+import { Mutable } from '../types';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -23,14 +25,19 @@ const useAuth = () => {
 	const basicSignIn = async (email: string, password: string) => {
 		try {
 			const { user } = await signInWithEmailAndPassword(auth, email, password);
+			const userDocRef = doc(db, 'users', user.uid);
 
-			await setDoc(doc(db, 'users', user.uid), {
-				email,
-				photoURL: user.photoURL,
-				displayName: user.displayName,
-			});
+			const mutableUser = user as Mutable<User>;
 
-			saveUserToLocalStorage(user);
+			const snapshot = await getDoc(userDocRef);
+
+			if (snapshot.data()?.photoURL) {
+				mutableUser.photoURL = snapshot.data()?.photoURL as string;
+			}
+
+			console.log(snapshot.data());
+
+			saveUserToLocalStorage(mutableUser);
 
 			navigate('/', { replace: true });
 		} catch (error: unknown | FirebaseError) {

@@ -1,5 +1,5 @@
 import { FormEvent, useContext, useEffect, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import brokenImg from '../../../assets/images/broken-img.png';
@@ -9,6 +9,8 @@ import Spinner from '../../Spinner/Spinner';
 import useListing from '../../../hooks/useListing';
 import { getListing } from '../../../api/listings';
 import { AuthContext } from '../../../contexts/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 type EditListingItems = {
 	listing: Partial<Listing>;
@@ -19,6 +21,7 @@ const EditListing = () => {
 	const [imageFile, setImageFile] = useState<File>();
 	const [preview, setPreview] = useState('');
 	const [listing, setListing] = useState<Listing>();
+	const [buttonIsClickable, setButtonIsClickable] = useState(true);
 
 	const { listingId } = useParams();
 
@@ -45,6 +48,16 @@ const EditListing = () => {
 			setListing(data);
 		}
 	}, [data]);
+
+	useEffect(() => {
+		if (listing) {
+			if (Object.values(listing).some((x) => !x)) {
+				setButtonIsClickable(false);
+			} else {
+				setButtonIsClickable(true);
+			}
+		}
+	}, [listing]);
 
 	if (isLoading) {
 		return (
@@ -77,7 +90,13 @@ const EditListing = () => {
 	};
 
 	return (
-		<div className="flex h-full w-full justify-center my-10">
+		<div className="flex h-full w-full justify-center my-10 relative">
+			<Link
+				to={`/catalog/${data.category}/${data.subcategory}/${data.id}`}
+				replace={true}
+				className="absolute left-96 hover:underline">
+				<FontAwesomeIcon icon={faArrowLeftLong} /> Back to the listing
+			</Link>
 			<form onSubmit={handleSubmit} className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
 				<h1 className="text-2xl font-bold mb-4">Edit Listing</h1>
 				<div className="mb-8 flex flex-col gap-4">
@@ -107,7 +126,7 @@ const EditListing = () => {
 						</label>
 						<input
 							className="shadow appearance-none border rounded w-full p-2 leading-tight focus:outline-none focus:shadow-outline"
-							value={data.title}
+							value={listing?.title}
 							name="title"
 							onChange={(e) => setListing((oldData) => ({ ...oldData!, title: e.target.value }))}
 						/>
@@ -144,7 +163,7 @@ const EditListing = () => {
 						</label>
 						<input
 							className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-							value={data.price}
+							value={listing?.price}
 							type="number"
 							name="price"
 							onChange={(e) => setListing((oldData) => ({ ...oldData!, price: +e.target.value }))}
@@ -156,15 +175,15 @@ const EditListing = () => {
 						</label>
 						<textarea
 							className="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
-							value={data.description}
+							value={listing?.description}
 							name="description"
 							onChange={(e) => setListing((oldData) => ({ ...oldData!, description: e.target.value }))}
 						/>
 					</div>
 				</div>
 				<button
-					className="cursor-pointer text-slate-700 disabled:text-slate-400 w-full bg-orange-300 p-2 rounded"
-					disabled={false}>
+					className="cursor-pointer text-black font-semibold disabled:text-slate-700 disabled:cursor-default disabled:bg-slate-300 w-full bg-orange-400 p-2 rounded"
+					disabled={!buttonIsClickable}>
 					Edit listing
 				</button>
 			</form>

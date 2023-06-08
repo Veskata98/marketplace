@@ -42,9 +42,9 @@ const useListing = () => {
 		}
 
 		if (newImageUrl) {
-			await updateDoc(docRef, { ...listing, imageUrl: newImageUrl });
+			await updateDoc(docRef, { ...listing, imageUrl: newImageUrl, modifiedAt: Date.now() });
 		} else {
-			await updateDoc(docRef, { ...listing });
+			await updateDoc(docRef, { ...listing, modifiedAt: Date.now() });
 		}
 	};
 

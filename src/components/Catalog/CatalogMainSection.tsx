@@ -17,19 +17,19 @@ type CatalogMainSectionProps = {
 export const CatalogMainSection = ({ category, subcategory }: CatalogMainSectionProps) => {
 	const [maxLimit, setMaxLimit] = useState(20);
 
-	const query = useQuery('listings', () => getListings(maxLimit, category, subcategory), {
+	const { data, isError, isLoading } = useQuery('listings', () => getListings(maxLimit, category, subcategory), {
 		staleTime: 5 * (60 * 1000),
 	});
 
-	if (query.isLoading) {
+	if (isLoading) {
 		return <Spinner />;
 	}
 
-	if (query.isError || !query.data) {
+	if (isError || !data) {
 		return <Navigate to="/404" />;
 	}
 
-	if (query.data.listings.length === 0) {
+	if (data.listings.length === 0) {
 		return <h2 className="flex items-center justify-center text-2xl h-full">There are no listings yet.</h2>;
 	}
 
@@ -38,13 +38,13 @@ export const CatalogMainSection = ({ category, subcategory }: CatalogMainSection
 		scrollToBottom();
 	};
 
-	const canExpandListings = () => query.data.totalListingCount > 20 && maxLimit + 20 < query.data.totalListingCount;
+	const canExpandListings = () => data.totalListingCount > 20 && maxLimit + 20 < data.totalListingCount;
 
 	return (
 		<>
 			<h2 className="font-semibold text-2xl p-4 text-center">Latest listed</h2>
 			<div className="flex gap-4 flex-wrap justify-center">
-				{query.data.listings.map((x: Listing) => (
+				{data.listings.map((x: Listing) => (
 					<ListingCard key={x.id} listing={x} />
 				))}
 			</div>

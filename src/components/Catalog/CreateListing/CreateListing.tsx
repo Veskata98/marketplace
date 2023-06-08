@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useState } from 'react';
+import { FormEvent, useContext, useState, ChangeEvent, useEffect } from 'react';
 import useListing from '../../../hooks/useListing';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { categoriesWithSubcategories } from '../../../types';
@@ -18,10 +18,26 @@ const CreateListing = () => {
 	const [imageFile, setImageFile] = useState<File>();
 	const [preview, setPreview] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
+	const [buttonIsClickable, setButtonIsClickable] = useState(false);
 
 	const { user } = useContext(AuthContext);
 	const { addListing } = useListing();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (Object.values(listingData).some((x) => !x)) {
+			setButtonIsClickable(false);
+		} else {
+			setButtonIsClickable(true);
+		}
+	}, [listingData]);
+
+	const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+		setListingData((oldData) => ({
+			...oldData,
+			[e.target.name]: e.target.value,
+		}));
+	};
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -66,7 +82,11 @@ const CreateListing = () => {
 
 	const avatarChangeHandler = (event: any) => {
 		setImageFile(event.target.files[0]);
-		setPreview(URL.createObjectURL(event.target.files[0]));
+
+		const imageUrl = URL.createObjectURL(event.target.files[0]);
+
+		setPreview(imageUrl);
+		setListingData((oldData) => ({ ...oldData, imageUrl }));
 	};
 
 	return (
@@ -98,7 +118,7 @@ const CreateListing = () => {
 								className="shadow appearance-none border rounded w-full p-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 								value={listingData.title}
 								name="title"
-								onChange={(e) => setListingData((oldData) => ({ ...oldData, title: e.target.value }))}
+								onChange={handleChangeInput}
 							/>
 						</div>
 						<div>
@@ -182,8 +202,8 @@ const CreateListing = () => {
 						</div>
 					</div>
 					<button
-						className="cursor-pointer text-slate-700 font-semibold disabled:text-slate-400 w-full bg-orange-300 p-2 rounded"
-						disabled={false}>
+						className="cursor-pointer text-black font-semibold disabled:text-slate-700 disabled:cursor-default disabled:bg-slate-300 w-full bg-orange-400 p-2 rounded"
+						disabled={!buttonIsClickable}>
 						Create listing
 					</button>
 				</form>

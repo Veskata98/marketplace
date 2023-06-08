@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +13,6 @@ import Spinner from '../../Spinner/Spinner';
 import { Listing } from '../../../types';
 
 const SingleListing = () => {
-	const [listing, setListing] = useState<Listing>();
 	const { user } = useContext(AuthContext);
 
 	const { listingId } = useParams();
@@ -23,11 +22,9 @@ const SingleListing = () => {
 		navigate(-1);
 	};
 
-	const { data, isLoading, isError } = useQuery(['listing', listingId], () => getListing(listingId, user));
-
-	useEffect(() => {
-		setListing(data);
-	}, [data]);
+	const { data, isLoading, isError } = useQuery(['listing', listingId], () => getListing(listingId, user), {
+		refetchOnMount: 'always',
+	});
 
 	if (isLoading) {
 		return (

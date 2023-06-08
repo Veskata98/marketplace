@@ -20,6 +20,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import Inbox from './components/Profile/Inbox/Inbox';
 import SingleMessage from './components/Profile/Inbox/SingleMessage/SingelMessage';
 import { NotificationProvider } from './contexts/NotificationContext';
+import Footer from './components/Footer/Footer';
 
 const queryClient = new QueryClient({
 	defaultOptions: { queries: { staleTime: 5 * 60 * 1000, refetchOnWindowFocus: false } },
@@ -50,6 +51,7 @@ const App = () => {
 							<Route path="/404" element={<NotFound />} />
 						</Routes>
 					</Main>
+					<Footer />
 				</NotificationProvider>
 			</AuthProvider>
 			<ReactQueryDevtools initialIsOpen={false} />

@@ -1,5 +1,9 @@
 import { ReactNode } from 'react';
 
+export type Mutable<Type> = {
+	-readonly [Key in keyof Type]: Type[Key];
+};
+
 export type ChildrenProps = {
 	children: ReactNode;
 };

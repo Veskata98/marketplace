@@ -58,9 +58,12 @@ export const Header = () => {
 							</Link>
 						</li>
 						<li>
-							<Link to={`/profile/${user.uid}`} className="flex gap-1 items-center justify-center ">
+							<Link
+								to={`/profile/${user.uid}`}
+								className="flex gap-1 items-center justify-center"
+								title="Go to Profile">
 								<img
-									className="w-10 h-10 rounded-full object-contain"
+									className="w-10 h-10 rounded-full object-cover"
 									src={user.photoURL || defaultAvatar}
 									alt="profile_img"
 									referrerPolicy="no-referrer"

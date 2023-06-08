@@ -6,7 +6,7 @@ const Profile = () => {
 	const { uid } = useParams();
 
 	return (
-		<div className="flex w-3/5">
+		<div className="flex w-4/6">
 			<ProfileMainSection />
 			<MyListingSection userId={uid!} />
 		</div>

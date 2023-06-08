@@ -8,6 +8,7 @@ export const AuthContext = createContext<AuthContextType>({
 	user: null,
 	saveUserToLocalStorage: () => {},
 	removeUserFromLocalStorage: () => {},
+	changeAvatarInLocalStorage: () => {},
 });
 
 export const AuthProvider = ({ children }: ChildrenProps) => {
@@ -31,8 +32,14 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
 		setUser(null);
 	};
 
+	const changeAvatarInLocalStorage = (photoURL: string) => {
+		setUser((oldData) => ({ ...oldData!, photoURL }));
+		localStorage.setItem('user', JSON.stringify({ ...user, photoURL }));
+	};
+
 	return (
-		<AuthContext.Provider value={{ user, saveUserToLocalStorage, removeUserFromLocalStorage }}>
+		<AuthContext.Provider
+			value={{ user, saveUserToLocalStorage, removeUserFromLocalStorage, changeAvatarInLocalStorage }}>
 			{children}
 		</AuthContext.Provider>
 	);
