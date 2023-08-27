@@ -61,7 +61,7 @@ export const Header = () => {
 							<Link
 								to={`/profile/${user.uid}`}
 								className="flex gap-1 items-center justify-center"
-								title="Go to Profile">
+								title="My Profile">
 								<img
 									className="w-10 h-10 rounded-full object-cover"
 									src={user.photoURL || defaultAvatar}

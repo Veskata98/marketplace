@@ -182,7 +182,7 @@ const EditListing = () => {
 					</div>
 				</div>
 				<button
-					className="cursor-pointer text-black font-semibold disabled:text-slate-700 disabled:cursor-default disabled:bg-slate-300 w-full bg-orange-400 p-2 rounded"
+					className="cursor-pointer text-black font-medium disabled:text-slate-700 disabled:cursor-default disabled:bg-slate-300 w-full bg-orange-300 p-2 rounded"
 					disabled={!buttonIsClickable}>
 					Edit listing
 				</button>

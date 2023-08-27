@@ -4,8 +4,8 @@ import { faFacebook, faTwitter, faInstagram } from '@fortawesome/free-brands-svg
 
 const Footer = () => {
 	return (
-		<div className="bg-orange-300 w-full py-8 px-8 pb-4">
-			<div className="flex justify-around">
+		<div className="bg-orange-300 w-full py-4 pb-3 relative z-10">
+			<div className="flex justify-around px-8 pb-4">
 				<div>
 					<h2 className="text-white font-bold text-xl mb-4">Contact</h2>
 					<ul className="space-y-2 font-medium">
@@ -69,7 +69,9 @@ const Footer = () => {
 					</ul>
 				</div>
 			</div>
-			<p className="text-center text-white pt-4 font-medium">Veselin Yordanov &copy; 2023</p>
+			<p className="text-center text-white pt-3 font-medium border-t border-slate-500 border-opacity-25">
+				Veselin Yordanov &copy; 2023
+			</p>
 		</div>
 	);
 };

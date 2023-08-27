@@ -3,10 +3,12 @@ import { FormEvent, useState } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import useAuth from '../../../hooks/useAuth';
 import { Link } from 'react-router-dom';
+import Spinner from '../../Spinner/Spinner';
 
 const SignIn = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [error, setError] = useState('');
 
@@ -27,16 +29,24 @@ const SignIn = () => {
 
 	const signInHandler = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setIsLoading(true);
 
 		try {
 			await basicSignIn(email, password);
 		} catch (error: any) {
 			setError('Incorrect email or password. Please try again');
+			setIsLoading(false);
 		}
 	};
 
 	return (
 		<div className="flex flex-col items-center justify-center bg-slate-200 w-max m-auto p-8 rounded-lg shadow-lg relative border-orange-300 border">
+			{isLoading && (
+				<div className="absolute bg-slate-200 bg-opacity-80 w-full h-full">
+					<Spinner />
+				</div>
+			)}
+
 			<h2 className="text-2xl font-semibold text-gray-800">Sign In</h2>
 			{error && <div className="mt-4 p-2 mb-2 bg-red-200 text-red-700 rounded-md text-center">{error}</div>}
 			<form className="flex flex-col gap-2" onSubmit={(e) => signInHandler(e)}>
@@ -75,7 +85,7 @@ const SignIn = () => {
 				className="flex items-center gap-2 justify-center font-semibold p-1 hover:text-gray-800 rounded-md">
 				<FcGoogle className="text-2xl" />
 			</button>
-			<span className="absolute bottom-0 right-2">
+			<span className="absolute bottom-0">
 				Don't have an account?{' '}
 				<Link to="/auth/signup" className="hover:text-orange-500 hover:underline hover:italic ">
 					Sign Up here

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { categoriesWithSubcategories } from '../../../types';
 
 import CatalogSidebarList from './CatalogSidebarList/CatalogSidebarList';
-import { CatalogMainSection } from '../CatalogMainSection';
+import { CatalogMainSection } from '../CatalogMainSection/CatalogMainSection';
 
 const CatalogWrapper = () => {
 	const [isVisible, setIsVisible] = useState(

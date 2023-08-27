@@ -22,7 +22,7 @@ const MessageCard = ({ message: m, isReceiver }: MessageCardProps) => {
 	const { data } = useQuery(['listing', m.listingId], () => getListing(m.listingId, user));
 
 	return (
-		<Link to={`/messages/${m.id}`} className="block p-4 rounded-lg shadow-md relative h-28 back">
+		<Link to={`/messages/${m.id}`} className="block p-4 rounded shadow-md relative h-28 back">
 			<img
 				className="absolute top-0 left-0 w-full h-full object-cover opacity-70 rounded-lg"
 				style={{ filter: 'brightness(20%)' }}

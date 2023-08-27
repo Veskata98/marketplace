@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
-import { Listing } from '../../types';
+import { Listing } from '../../../types';
 
-import ListingCard from './ListingCard/ListingCard';
-import Spinner from '../Spinner/Spinner';
-import { scrollToBottom } from '../../utils/helpers';
-import { getListings } from '../../api/listings';
+import ListingCard from '../ListingCard/ListingCard';
+import Spinner from '../../Spinner/Spinner';
+import { scrollToBottom } from '../../../utils/helpers';
+import { getListings } from '../../../api/listings';
 
 type CatalogMainSectionProps = {
 	category?: string;
@@ -19,6 +19,7 @@ export const CatalogMainSection = ({ category, subcategory }: CatalogMainSection
 
 	const { data, isError, isLoading } = useQuery('listings', () => getListings(maxLimit, category, subcategory), {
 		staleTime: 5 * (60 * 1000),
+		refetchOnMount: 'always',
 	});
 
 	if (isLoading) {
@@ -38,7 +39,7 @@ export const CatalogMainSection = ({ category, subcategory }: CatalogMainSection
 		scrollToBottom();
 	};
 
-	const canExpandListings = () => data.totalListingCount > 20 && maxLimit + 20 < data.totalListingCount;
+	const canExpandListings = data.totalListingCount > 20 && maxLimit + 20 < data.totalListingCount;
 
 	return (
 		<>
@@ -48,7 +49,7 @@ export const CatalogMainSection = ({ category, subcategory }: CatalogMainSection
 					<ListingCard key={x.id} listing={x} />
 				))}
 			</div>
-			{canExpandListings() && (
+			{canExpandListings && (
 				<div className="flex justify-center mt-4">
 					<button className="text-lg text-orange-500 hover:text-orange-400" onClick={updateMaxLimit}>
 						Show More

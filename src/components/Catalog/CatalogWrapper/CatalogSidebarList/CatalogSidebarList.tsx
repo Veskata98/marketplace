@@ -11,10 +11,10 @@ type CatalogSidebarListProps = {
 const CatalogSidebarList = ({ category, showCategory, hideCategory, isVisible }: CatalogSidebarListProps) => {
 	return (
 		<li
-			className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300"
+			className="flex items-center justify-between cursor-pointer relative border-b border-slate-300"
 			onMouseEnter={() => showCategory(category)}
 			onMouseLeave={() => hideCategory(category)}>
-			<Link to={`/catalog/${category}`} className={`${isVisible && 'text-orange-600'}`}>
+			<Link to={`/catalog/${category}`} className={`p-2 pl-4 w-full ${isVisible ? 'text-orange-600' : ''}`}>
 				{categoriesWithSubcategories[category].label}
 			</Link>
 			{isVisible && (

@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { categoriesWithSubcategories } from '../../../types';
 
-import { CatalogMainSection } from '../CatalogMainSection';
+import { CatalogMainSection } from '../CatalogMainSection/CatalogMainSection';
 
 const CatalogCategory = () => {
+	const [sortBy, setSortBy] = useState<string>();
+
 	const { category, subcategory } = useParams<{ category: string; subcategory: string }>();
 
 	return (
@@ -21,13 +24,26 @@ const CatalogCategory = () => {
 						{Object.entries(categoriesWithSubcategories[category].subcategories).map((x) => (
 							<li
 								key={x[0]}
-								className="flex items-center justify-between p-2 pl-4 cursor-pointer relative border-b border-slate-300">
-								<Link to={`/catalog/${category}/${x[0]}`} className="hover:text-orange-500">
+								className="flex items-center justify-between cursor-pointer relative border-b border-slate-300">
+								<Link
+									to={`/catalog/${category}/${x[0]}`}
+									className="p-2 pl-4 w-full hover:text-orange-500">
 									{x[1]}
 								</Link>
 							</li>
 						))}
 					</ul>
+				)}
+				{subcategory && (
+					<div>
+						<p>Sort by:</p>
+						<select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+							<option value="first">1</option>
+							<option value="second">2</option>
+							<option value="third">3</option>
+						</select>
+						<input type="range" />
+					</div>
 				)}
 			</div>
 			<div className="w-4/5 pb-8 relative">
